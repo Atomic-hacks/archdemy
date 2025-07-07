@@ -13,6 +13,9 @@ export default function Hero() {
   const buttonsRef = useRef<HTMLDivElement>(null);
   const overlayRef = useRef<HTMLDivElement>(null);
   const companyRef = useRef<HTMLDivElement>(null);
+  const accentRef = useRef<HTMLDivElement>(null);
+  const addressRef = useRef<HTMLDivElement>(null);
+  const textBackdropRef = useRef<HTMLDivElement>(null);
 
   const [mounted, setMounted] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
@@ -34,7 +37,7 @@ export default function Hero() {
 
     window.addEventListener("resize", checkMobile);
     window.addEventListener("orientationchange", () => {
-      setTimeout(checkMobile, 100); // Delay to get accurate dimensions after orientation change
+      setTimeout(checkMobile, 100);
     });
 
     return () => {
@@ -61,8 +64,8 @@ export default function Hero() {
       backgroundRef.current.style.transform = `translate3d(0, ${backgroundMove}px, 0) scale(${backgroundScale})`;
 
       // Lighter effects on mobile to preserve performance
-      const blurAmount = scrollProgress * (isMobile ? 4 : 8);
-      const brightness = 1 - scrollProgress * 0.3;
+      const blurAmount = scrollProgress * (isMobile ? 1 : 2);
+      const brightness = 1 - scrollProgress * 0.2;
       backgroundRef.current.style.filter = `blur(${blurAmount}px) brightness(${brightness})`;
     }
 
@@ -105,9 +108,33 @@ export default function Hero() {
       companyRef.current.style.opacity = companyOpacity.toString();
     }
 
-    // Overlay effect
+    // Accent line parallax
+    if (accentRef.current) {
+      const accentMove = scrolled * 0.25 * parallaxIntensity;
+      const accentOpacity = Math.max(1 - scrollProgress * 0.8, 0);
+      accentRef.current.style.transform = `translate3d(0, ${accentMove}px, 0)`;
+      accentRef.current.style.opacity = accentOpacity.toString();
+    }
+
+    // Address parallax
+    if (addressRef.current) {
+      const addressMove = scrolled * 0.35 * parallaxIntensity;
+      const addressOpacity = Math.max(1 - scrollProgress * 0.9, 0);
+      addressRef.current.style.transform = `translate3d(0, ${addressMove}px, 0)`;
+      addressRef.current.style.opacity = addressOpacity.toString();
+    }
+
+    // Text backdrop parallax
+    if (textBackdropRef.current) {
+      const backdropMove = scrolled * 0.45 * parallaxIntensity;
+      const backdropOpacity = Math.max(1 - scrollProgress * 0.8, 0);
+      textBackdropRef.current.style.transform = `translate3d(0, ${backdropMove}px, 0)`;
+      textBackdropRef.current.style.opacity = backdropOpacity.toString();
+    }
+
+    // Overlay effect - subtle
     if (overlayRef.current) {
-      const overlayOpacity = Math.min(scrollProgress * 0.6, 0.5);
+      const overlayOpacity = Math.min(scrollProgress * 0.3, 0.2);
       overlayRef.current.style.opacity = overlayOpacity.toString();
     }
   }, [isMobile]);
@@ -144,9 +171,11 @@ export default function Hero() {
   if (!mounted) {
     return (
       <main>
-        <div className="relative h-screen overflow-hidden bg-black">
+        <div className="relative h-screen overflow-hidden bg-white">
           <div className="absolute inset-0 flex items-center justify-center">
-            <div className="text-white text-xl">Loading...</div>
+            <div className="text-neutral-900 text-xl font-light">
+              Loading...
+            </div>
           </div>
         </div>
       </main>
@@ -157,7 +186,7 @@ export default function Hero() {
     <main className="sticky top-0">
       <div
         ref={heroRef}
-        className="relative overflow-hidden"
+        className="relative overflow-hidden bg-white"
         style={{
           height: isMobile ? `${Math.max(screenHeight, 600)}px` : "100vh",
           willChange: "transform",
@@ -179,253 +208,278 @@ export default function Hero() {
             mediaItems={[
               {
                 type: "video",
-                src: "/sky2.mp4",
-                alt: "sky2",
+                src: "/innov2.mp4",
+                alt: "innov1",
               },
             ]}
-            className=" "
+            className=""
           />
         </div>
 
-        {/* Dynamic Overlay - Enhanced for mobile */}
+        {/* Clean Overlay for Better Contrast */}
         <div
           ref={overlayRef}
-          className="absolute inset-0 bg-gradient-to-b from-black/50 via-black/20 to-black/70 z-5"
+          className="absolute inset-0 bg-gradient-to-r from-black/40 via-transparent to-black/20 z-5"
           style={{ willChange: "opacity" }}
         />
 
-        {/* Mobile Layout - Stacked Vertically */}
+        {/* Mobile Layout - Clean and Simple */}
         <div className="absolute inset-0 z-10 md:hidden">
-          <div className="flex flex-col h-full justify-between px-4 py-8 safe-area-insets">
-            {/* Company Name - Top */}
-            <div
-              ref={companyRef}
-              className="text-center pt-4"
-              style={{
-                willChange: "transform, opacity",
-                transformStyle: "preserve-3d",
-              }}
-            >
-              <h1
-                className="text-4xl xs:text-5xl sm:text-6xl font-extralight text-white tracking-tighter leading-none"
-                style={{
-                  fontWeight: "200",
-                  textShadow: "0 4px 20px rgba(0,0,0,0.4)",
-                  letterSpacing: "-0.06em",
-                }}
-              >
-                <span className="block">SPARK</span>
-                <span className="block text-white/95 -mt-2">HOUSE</span>
-              </h1>
-            </div>
-
-            {/* Content - Center */}
-            <div
-              ref={contentRef}
-              className="flex-1 flex flex-col justify-center px-2"
-              style={{
-                willChange: "transform, opacity",
-                transformStyle: "preserve-3d",
-              }}
-            >
-              {/* Main Headline */}
+          <div className="flex flex-col h-full justify-center items-center px-8 py-8">
+            {/* Content Container */}
+            <div className="relative z-10 text-center">
+              {/* Accent Line */}
               <div
-                ref={titleRef}
-                className="mb-6 text-center"
-                style={{ willChange: "transform" }}
-              >
-                <h2
-                  className="text-xl xs:text-2xl sm:text-3xl font-light text-white/90 leading-tight"
-                  style={{
-                    fontWeight: "300",
-                    textShadow: "0 2px 10px rgba(0,0,0,0.4)",
-                    letterSpacing: "0.01em",
-                  }}
-                >
-                  <span className="block mb-1">Broad Vision</span>
-                  <span className="block mb-1 text-white/85">
-                    Excellent Service
-                  </span>
-                  <span className="block text-white/80">Great Value</span>
-                </h2>
-              </div>
-
-              {/* Subtitle */}
-              <div
-                ref={subtitleRef}
-                className="mb-8 text-center px-4"
+                ref={accentRef}
+                className="mb-8"
                 style={{ willChange: "transform, opacity" }}
               >
-                <p
-                  className="text-sm sm:text-base text-white/70 leading-relaxed font-light max-w-sm mx-auto"
+                <div className="w-16 h-px bg-gradient-to-r from-amber-500 to-amber-600"></div>
+              </div>
+
+              {/* Company Name */}
+              <div
+                ref={companyRef}
+                className="text-center mb-8"
+                style={{
+                  willChange: "transform, opacity",
+                  transformStyle: "preserve-3d",
+                }}
+              >
+                <h1
+                  className="text-4xl font-extralight text-white tracking-wide leading-none"
                   style={{
-                    fontWeight: "300",
-                    textShadow: "0 1px 6px rgba(0,0,0,0.4)",
-                    letterSpacing: "0.01em",
-                    lineHeight: "1.5",
+                    fontWeight: "200",
+                    letterSpacing: "0.1em",
+                    textShadow: "0 2px 4px rgba(0,0,0,0.8)",
                   }}
                 >
-                  Our goal then and now is to provide quality on time projects
+                  ARCHADEMY
+                </h1>
+                <p className="text-sm text-amber-200 font-light mt-2 tracking-widest">
+                  ARCHITECTURAL FIRM
                 </p>
               </div>
-            </div>
 
-            {/* Buttons - Bottom */}
-            <div
-              ref={buttonsRef}
-              className="flex flex-col gap-3 px-2 pb-4"
-              style={{ willChange: "transform" }}
-            >
-              <button
-                className="group px-6 py-4 bg-green-600 text-white font-medium text-sm hover:bg-green-700 transition-all duration-300 active:scale-95 shadow-lg touch-manipulation"
+              {/* Content */}
+              <div
+                ref={contentRef}
+                className="text-center max-w-sm"
                 style={{
-                  fontWeight: "500",
-                  letterSpacing: "0.05em",
-                  minHeight: "48px", // Better touch target
+                  willChange: "transform, opacity",
+                  transformStyle: "preserve-3d",
                 }}
               >
-                <span className="relative z-10 uppercase tracking-wider">
-                  Get Free Quote
-                </span>
-              </button>
+                {/* Main Headline */}
+                <div
+                  ref={titleRef}
+                  className="mb-6"
+                  style={{ willChange: "transform" }}
+                >
+                  <h2
+                    className="text-2xl font-light text-white leading-tight mb-4"
+                    style={{
+                      fontWeight: "300",
+                      letterSpacing: "0.02em",
+                      textShadow: "0 1px 3px rgba(0,0,0,0.8)",
+                    }}
+                  >
+                    Excellence Driven Design Company!
+                  </h2>
+                </div>
 
-              <button
-                className="group px-6 py-4 border border-white/40 text-white/90 font-light text-sm hover:bg-white/5 hover:border-white/60 transition-all duration-300 active:scale-95 backdrop-blur-sm touch-manipulation"
-                style={{
-                  fontWeight: "300",
-                  letterSpacing: "0.05em",
-                  minHeight: "48px", // Better touch target
-                }}
-              >
-                <span className="relative z-10 uppercase tracking-wider">
-                  Get In Touch
-                </span>
-              </button>
+                {/* Subtitle */}
+                <div
+                  ref={subtitleRef}
+                  className="mb-8"
+                  style={{ willChange: "transform, opacity" }}
+                >
+                  <p
+                    className="text-base text-gray-200 leading-relaxed font-light mb-4"
+                    style={{
+                      fontWeight: "300",
+                      letterSpacing: "0.01em",
+                      lineHeight: "1.6",
+                      textShadow: "0 1px 2px rgba(0,0,0,0.7)",
+                    }}
+                  >
+                    Discover Archademy, where architecture communicates your
+                    vernacular
+                  </p>
+                </div>
+
+                {/* Button */}
+                <div
+                  ref={buttonsRef}
+                  className="mb-8"
+                  style={{ willChange: "transform" }}
+                >
+                  <button
+                    className="px-8 py-3 bg-amber-600 text-white font-medium text-sm hover:bg-amber-700 transition-all duration-300 active:scale-95"
+                    style={{
+                      fontWeight: "400",
+                      letterSpacing: "0.08em",
+                      minHeight: "48px",
+                    }}
+                  >
+                    SEE OUR PROJECTS
+                  </button>
+                </div>
+
+                {/* Address */}
+                <div
+                  ref={addressRef}
+                  className="text-center"
+                  style={{ willChange: "transform, opacity" }}
+                >
+                  <p
+                    className="text-sm text-gray-300 font-light leading-relaxed"
+                    style={{
+                      fontWeight: "300",
+                      letterSpacing: "0.01em",
+                      lineHeight: "1.5",
+                      textShadow: "0 1px 2px rgba(0,0,0,0.6)",
+                    }}
+                  >
+                    No.5 Pius Wuchendu Street, NTA Road, Port Harcourt
+                  </p>
+                </div>
+              </div>
             </div>
           </div>
         </div>
 
-        {/* Desktop Layout - Side by Side */}
+        {/* Desktop Layout - Clean and Professional */}
         <div className="absolute inset-0 z-10 hidden md:block">
-          {/* Company Name - Left Side */}
-          <div
-            ref={companyRef}
-            className="absolute left-8 lg:left-16 xl:left-24 top-1/2 transform -translate-y-1/2"
-            style={{
-              willChange: "transform, opacity",
-              transformStyle: "preserve-3d",
-            }}
-          >
-            <h1
-              className="text-7xl lg:text-8xl xl:text-9xl 2xl:text-10xl font-extralight text-white tracking-tighter leading-none"
-              style={{
-                fontWeight: "200",
-                textShadow: "0 4px 20px rgba(0,0,0,0.3)",
-                letterSpacing: "-0.08em",
-              }}
-            >
-              <span className="block">SPARK</span>
-              <span className="block text-white/95">HOUSE</span>
-            </h1>
-          </div>
+          <div className="h-full flex items-center">
+            <div className="max-w-7xl mx-auto px-12 lg:px-20 xl:px-32 w-full">
+              <div className="grid grid-cols-12 gap-8 items-center">
+                {/* Left Side - Content */}
+                <div className="col-span-7 lg:col-span-6 xl:col-span-5">
+                  {/* Content Container */}
+                  <div className="relative z-10">
+                    {/* Accent Line */}
+                    <div
+                      ref={accentRef}
+                      className="mb-8"
+                      style={{ willChange: "transform, opacity" }}
+                    >
+                      <div className="w-24 h-px bg-gradient-to-r from-amber-500 to-amber-600"></div>
+                    </div>
 
-          {/* Content Container - Right Side */}
-          <div
-            ref={contentRef}
-            className="absolute right-8 lg:right-16 xl:right-24 top-1/2 transform -translate-y-1/2 max-w-lg"
-            style={{
-              willChange: "transform, opacity",
-              transformStyle: "preserve-3d",
-            }}
-          >
-            {/* Main Headline */}
-            <div
-              ref={titleRef}
-              className="mb-8"
-              style={{ willChange: "transform" }}
-            >
-              <h2
-                className="text-2xl lg:text-3xl xl:text-4xl font-light text-white/90 mb-4 leading-tight"
-                style={{
-                  fontWeight: "300",
-                  textShadow: "0 2px 10px rgba(0,0,0,0.3)",
-                  letterSpacing: "0.02em",
-                }}
-              >
-                Broad Vision
-                <span className="block mt-1 text-white/85">
-                  Excellent Service
-                </span>
-                <span className="block mt-1 text-white/80">Great Value</span>
-              </h2>
-            </div>
+                    {/* Company Name */}
+                    <div
+                      ref={companyRef}
+                      className="mb-12"
+                      style={{
+                        willChange: "transform, opacity",
+                        transformStyle: "preserve-3d",
+                      }}
+                    >
+                      <h1
+                        className="text-6xl lg:text-7xl xl:text-8xl font-extralight text-white tracking-wide leading-none"
+                        style={{
+                          fontWeight: "200",
+                          letterSpacing: "0.08em",
+                          textShadow: "0 2px 6px rgba(0,0,0,0.8)",
+                        }}
+                      >
+                        ARCHADEMY
+                      </h1>
+                      <p className="text-base text-amber-700 font-light mt-4 tracking-widest">
+                        ARCHITECTURAL FIRM BASED IN NIGERIA
+                      </p>
+                    </div>
 
-            {/* Subtitle */}
-            <div
-              ref={subtitleRef}
-              className="mb-12"
-              style={{ willChange: "transform, opacity" }}
-            >
-              <p
-                className="text-base lg:text-lg text-white/60 leading-relaxed font-light"
-                style={{
-                  fontWeight: "300",
-                  textShadow: "0 1px 6px rgba(0,0,0,0.3)",
-                  letterSpacing: "0.01em",
-                  lineHeight: "1.6",
-                }}
-              >
-                Our goal then and now is to provide quality on time projects
-              </p>
-            </div>
+                    {/* Content Container */}
+                    <div
+                      ref={contentRef}
+                      className="max-w-lg"
+                      style={{
+                        willChange: "transform, opacity",
+                        transformStyle: "preserve-3d",
+                      }}
+                    >
+                      {/* Main Headline */}
+                      <div
+                        ref={titleRef}
+                        className="mb-8"
+                        style={{ willChange: "transform" }}
+                      >
+                        <h2
+                          className="text-3xl lg:text-4xl xl:text-5xl font-light text-white leading-tight mb-6"
+                          style={{
+                            fontWeight: "300",
+                            letterSpacing: "0.02em",
+                            textShadow: "0 2px 4px rgba(0,0,0,0.8)",
+                          }}
+                        >
+                          Excellence Driven Design Company!
+                        </h2>
+                      </div>
 
-            {/* Buttons */}
-            <div
-              ref={buttonsRef}
-              className="flex flex-col gap-4"
-              style={{ willChange: "transform" }}
-            >
-              <button
-                className="group px-8 py-3 bg-green-600 text-white font-medium text-base hover:bg-green-700 transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl"
-                style={{
-                  fontWeight: "500",
-                  letterSpacing: "0.05em",
-                }}
-              >
-                <span className="relative z-10 uppercase tracking-wider">
-                  Get Free Quote
-                </span>
-              </button>
+                      {/* Subtitle */}
+                      <div
+                        ref={subtitleRef}
+                        className="mb-12"
+                        style={{ willChange: "transform, opacity" }}
+                      >
+                        <p
+                          className="text-lg lg:text-xl text-gray-200 leading-relaxed font-light"
+                          style={{
+                            fontWeight: "300",
+                            letterSpacing: "0.01em",
+                            lineHeight: "1.7",
+                            textShadow: "0 1px 3px rgba(0,0,0,0.7)",
+                          }}
+                        >
+                          Discover Archademy, where architecture communicates
+                          your vernacular
+                        </p>
+                      </div>
 
-              <button
-                className="group px-8 py-3 border border-white/30 text-white/90 font-light text-base hover:bg-white/5 hover:border-white/50 transition-all duration-300 transform hover:scale-105 backdrop-blur-sm"
-                style={{
-                  fontWeight: "300",
-                  letterSpacing: "0.05em",
-                }}
-              >
-                <span className="relative z-10 uppercase tracking-wider">
-                  Get In Touch
-                </span>
-              </button>
-            </div>
-          </div>
-        </div>
+                      {/* Button */}
+                      <div
+                        ref={buttonsRef}
+                        className="mb-10"
+                        style={{ willChange: "transform" }}
+                      >
+                        <button
+                          className="px-12 py-4 bg-amber-600 text-white font-medium text-base hover:bg-amber-700 transition-all duration-300 transform hover:scale-105"
+                          style={{
+                            fontWeight: "400",
+                            letterSpacing: "0.08em",
+                          }}
+                        >
+                          SEE OUR PROJECTS
+                        </button>
+                      </div>
 
-        {/* Enhanced Scroll Indicator */}
-        <div className="absolute bottom-6 md:bottom-12 left-1/2 transform -translate-x-1/2 z-20">
-          <div className="flex flex-col items-center text-white/50 group cursor-pointer">
-            <span
-              className="text-xs mb-2 md:mb-3 font-light tracking-widest uppercase opacity-60 group-hover:opacity-90 transition-opacity"
-              style={{
-                letterSpacing: "0.15em",
-              }}
-            >
-              Scroll
-            </span>
-            <div className="relative">
-              <div className="w-5 h-8 md:w-6 md:h-10 border border-white/20 rounded-full flex justify-center group-hover:border-white/40 transition-colors">
-                <div className="w-0.5 h-1.5 md:h-2 bg-white/40 rounded-full mt-1.5 md:mt-2 animate-bounce group-hover:bg-white/60 transition-colors" />
+                      {/* Address */}
+                      <div
+                        ref={addressRef}
+                        style={{ willChange: "transform, opacity" }}
+                      >
+                        <p
+                          className="text-base text-gray-300 font-light leading-relaxed"
+                          style={{
+                            fontWeight: "300",
+                            letterSpacing: "0.01em",
+                            lineHeight: "1.6",
+                            textShadow: "0 1px 2px rgba(0,0,0,0.6)",
+                          }}
+                        >
+                          No.5 Pius Wuchendu Street, NTA Road, Port Harcourt
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Right Side - Video space */}
+                <div className="col-span-5 lg:col-span-6 xl:col-span-7">
+                  {/* Clean space for video */}
+                </div>
               </div>
             </div>
           </div>

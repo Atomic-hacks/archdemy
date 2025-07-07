@@ -7,10 +7,14 @@ const page = () => {
     <div>
       <div className="sticky top-0">
         <ArchitectureHero
+          overlayType="solid"
+          overlayOpacity={0.6}
+          overlayColor="black"
+          overlayBlur={true}
           descriptionHeader="Let’s Build Something Remarkable Together"
           title="Contact Us"
-          description="Have a vision in mind or simply want to learn more about what we do? We're here to listen, collaborate, and create. Reach out to Spark House to start a conversation — whether it's a new project, a partnership, or a simple inquiry, we’re ready when you are."
-          backgroundImage="/house9.jpg"
+          description="Have a vision in mind or simply want to learn more about what we do? We're here to listen, collaborate, and create. Reach out to Archademy to start a conversation — whether it's a new project, a partnership, or a simple inquiry, we’re ready when you are."
+          backgroundImage="/house2.jpg"
           titleId="hero-title"
           descriptionId="hero-description"
         />

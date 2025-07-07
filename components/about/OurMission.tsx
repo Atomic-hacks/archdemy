@@ -1,243 +1,324 @@
 "use client";
+import React, { useEffect, useState } from "react";
+import {
+  ArrowUpRight,
+  Facebook,
+  Twitter,
+  Linkedin,
+  Home,
+  Mail,
+  Phone,
+} from "lucide-react";
 
-import { useState, useRef, useEffect, JSX } from "react";
-
-interface VisionItem {
-  id: string;
-  title: string;
-  subtitle: string;
-  description: string;
-  detail: string;
+interface TeamMember {
+  id: number;
+  name: string;
+  position: string;
   image: string;
-  imageAlt: string;
+  specialty: string;
+  description: string;
 }
 
-interface MousePosition {
-  x: number;
-  y: number;
+interface TeamSectionProps {
+  containerClassName?: string;
 }
 
-export default function VisionSection(): JSX.Element {
-  const [hoveredCard, setHoveredCard] = useState<string | null>(null);
-  const [mousePosition, setMousePosition] = useState<MousePosition>({
-    x: 0,
-    y: 0,
-  });
-  const sectionRef = useRef<HTMLElement>(null);
+const TeamSection: React.FC<TeamSectionProps> = ({
+  containerClassName = "",
+}) => {
+  const [isVisible, setIsVisible] = useState(false);
+  const [activeCard, setActiveCard] = useState<number | null>(null);
+  const [hoveredCard, setHoveredCard] = useState<number | null>(null);
 
-  // Mouse tracking for hover effects
   useEffect(() => {
-    const handleMouseMove = (e: MouseEvent): void => {
-      setMousePosition({ x: e.clientX, y: e.clientY });
-    };
-    window.addEventListener("mousemove", handleMouseMove);
-    return () => window.removeEventListener("mousemove", handleMouseMove);
+    const timer = setTimeout(() => setIsVisible(true), 300);
+    return () => clearTimeout(timer);
   }, []);
 
-  const visionItems: VisionItem[] = [
+  const teamMembers: TeamMember[] = [
     {
-      id: "vision",
-      title: "Our Vision",
-      subtitle: "Industry Leadership",
+      id: 1,
+      name: "Alexandra Chen",
+      position: "Creative Director",
+      image:
+        "https://images.unsplash.com/photo-1494790108755-2616b612b786?w=400&h=500&fit=crop&crop=face",
+      specialty: "Brand Strategy",
       description:
-        "At Spark House Limited, our vision is to be a leader in the construction and project management industry, known for our innovative solutions, unwavering commitment to quality, and superior client service.",
-      detail:
-        "We strive to exceed expectations, setting new benchmarks for excellence in every project we undertake.",
-      image: "/innov1.jpg",
-      imageAlt: "Modern architectural vision",
+        "Leading creative vision with 8+ years of experience in architectural design and brand development.",
     },
     {
-      id: "mission",
-      title: "Our Mission",
-      subtitle: "Excellence Delivered",
+      id: 2,
+      name: "Marcus Rodriguez",
+      position: "Lead Architect",
+      image:
+        "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=400&h=500&fit=crop&crop=face",
+      specialty: "Sustainable Design",
       description:
-        "Our mission is simple yet powerful: to deliver outstanding construction and project management services that transform visions into reality.",
-      detail:
-        "We are driven by a passion for creativity, a dedication to precision, and a relentless pursuit of excellence in every project, regardless of scale or complexity.",
-      image: "/innov2.jpg",
-      imageAlt: "Construction excellence mission",
+        "Specializes in eco-friendly architecture and innovative sustainable building solutions.",
     },
     {
-      id: "output",
-      title: "We Deliver Best Output",
-      subtitle: "Innovation & Technology",
+      id: 3,
+      name: "Sarah Kim",
+      position: "Interior Designer",
+      image:
+        "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=400&h=500&fit=crop&crop=face",
+      specialty: "Spatial Planning",
       description:
-        "We embrace innovation and technology to enhance our processes and deliver cutting-edge solutions.",
-      detail:
-        "From advanced project management tools to sustainable construction practices, we are at the forefront of industry trends, with our clients at the heart of everything we do.",
-      image: "/innov3.jpg",
-      imageAlt: "Best output delivery",
+        "Expert in creating functional and aesthetically pleasing interior spaces that tell stories.",
+    },
+    {
+      id: 4,
+      name: "David Thompson",
+      position: "Project Manager",
+      image:
+        "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=500&fit=crop&crop=face",
+      specialty: "Client Relations",
+      description:
+        "Ensures seamless project execution and maintains strong client relationships throughout.",
+    },
+    {
+      id: 5,
+      name: "Emily Johnson",
+      position: "Senior Designer",
+      image:
+        "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=400&h=500&fit=crop&crop=face",
+      specialty: "Contemporary Design",
+      description:
+        "Passionate about modern aesthetics and innovative design solutions for residential spaces.",
+    },
+    {
+      id: 6,
+      name: "Michael Park",
+      position: "Structural Engineer",
+      image:
+        "https://images.unsplash.com/photo-1566492031773-4f4e44671d66?w=400&h=500&fit=crop&crop=face",
+      specialty: "Engineering Excellence",
+      description:
+        "Ensures structural integrity while maintaining design vision in all our projects.",
+    },
+    {
+      id: 7,
+      name: "Lisa Wang",
+      position: "Landscape Architect",
+      image:
+        "https://images.unsplash.com/photo-1580489944761-15a19d654956?w=400&h=500&fit=crop&crop=face",
+      specialty: "Outdoor Spaces",
+      description:
+        "Creates harmonious outdoor environments that complement our architectural designs.",
+    },
+    {
+      id: 8,
+      name: "James Mitchell",
+      position: "Design Consultant",
+      image:
+        "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=400&h=500&fit=crop&crop=face",
+      specialty: "Luxury Interiors",
+      description:
+        "Specializes in high-end residential and commercial interior design with attention to detail.",
     },
   ];
 
+  const socialLinks = [
+    { icon: Home, label: "Houzz" },
+    { icon: Facebook, label: "Facebook" },
+    { icon: Twitter, label: "Twitter" },
+    { icon: Linkedin, label: "LinkedIn" },
+  ];
+
   return (
-    <section
-      ref={sectionRef}
-      className="relative py-16 sm:py-20 md:py-24 lg:py-32 bg-gradient-to-br from-stone-50 via-white to-green-50 overflow-hidden"
-    >
-      {/* Subtle background pattern */}
-      <div className="absolute inset-0 opacity-5">
-        <div
-          className="absolute inset-0"
-          style={{
-            backgroundImage: `radial-gradient(circle at 25% 25%, rgb(34 197 94 / 0.1) 0%, transparent 50%),
-                           radial-gradient(circle at 75% 75%, rgb(21 128 61 / 0.1) 0%, transparent 50%)`,
-          }}
-        />
-      </div>
-
-      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 md:px-8 lg:px-16 xl:px-24">
-        {/* Section Header */}
-        <div className="mb-16 sm:mb-20 md:mb-24">
-          <div className="max-w-4xl">
-            {/* Decorative accent */}
-            <div className="flex items-center space-x-4 mb-6">
-              <div className="w-12 h-px bg-gradient-to-r from-green-600 to-green-700" />
-              <span className="text-sm font-medium text-green-700 tracking-[0.15em] uppercase">
-                SparkHouse Operations
-              </span>
+    <div className={`relative min-h-screen bg-white ${containerClassName}`}>
+      {/* Main Content */}
+      <div className="relative z-10">
+        {/* Team Header Section */}
+        <section className="relative bg-neutral-50 py-24 overflow-hidden">
+          {/* Background Text */}
+          <div className="absolute inset-0 overflow-hidden pointer-events-none">
+            <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 select-none">
+              <h1
+                className="text-6xl md:text-7xl lg:text-8xl xl:text-9xl font-thin text-neutral-100 whitespace-nowrap"
+                style={{
+                  letterSpacing: "0.05em",
+                  fontWeight: "100",
+                }}
+              >
+                OUR TEAM
+              </h1>
             </div>
-
-            <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-light text-gray-900 leading-[0.9] tracking-tight mb-8">
-              Simple, Minimalistic,
-              <br />
-              <span className="text-gray-600">Sustainable</span>
-            </h2>
-
-            <p className="text-base sm:text-lg md:text-xl text-gray-600 leading-relaxed font-light max-w-3xl">
-              Our operational philosophy is centered on simplicity, minimalism,
-              and sustainability. We believe in using these principles to guide
-              our work, ensuring that we deliver projects that are not only
-              visually stunning but also environmentally conscious and
-              efficient.
-            </p>
           </div>
-        </div>
 
-        {/* Vision Cards Grid */}
-        <div className="space-y-12 md:space-y-16 lg:space-y-20">
-          {visionItems.map((item: VisionItem, index: number) => (
-            <div
-              key={item.id}
-              className="group relative"
-              onMouseEnter={() => setHoveredCard(item.id)}
-              onMouseLeave={() => setHoveredCard(null)}
-            >
+          <div className="relative z-10 max-w-7xl mx-auto px-6 md:px-12 lg:px-24">
+            <div className="text-center space-y-12">
               <div
-                className={`grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16 items-center ${
-                  index % 2 === 1 ? "lg:grid-flow-col-dense" : ""
+                className={`transform transition-all duration-1000 ease-out ${
+                  isVisible
+                    ? "translate-y-0 opacity-100"
+                    : "translate-y-8 opacity-0"
                 }`}
               >
-                {/* Image Section */}
-                <div
-                  className={`relative overflow-hidden bg-gray-100 ${
-                    index % 2 === 1 ? "lg:col-start-2" : ""
-                  }`}
-                >
-                  <div className="aspect-[4/3] relative">
-                    <img
-                      src={item.image}
-                      alt={item.imageAlt}
-                      className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-                    />
-                    {/* Subtle overlay */}
-                    <div className="absolute inset-0 bg-gradient-to-br from-gray-900/20 via-transparent to-transparent opacity-60 group-hover:opacity-40 transition-opacity duration-500" />
-
-                    {/* Image accent */}
-                    <div className="absolute top-6 right-6">
-                      <div className="w-8 h-8 relative">
-                        <div className="absolute top-1/2 left-0 w-full h-px bg-white/60 transform -translate-y-1/2" />
-                        <div className="absolute left-1/2 top-0 w-px h-full bg-white/60 transform -translate-x-1/2" />
-                        <div className="absolute top-1/2 left-1/2 w-2 h-2 bg-white/60 transform -translate-x-1/2 -translate-y-1/2" />
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Content Section */}
-                <div
-                  className={`space-y-6 ${
-                    index % 2 === 1 ? "lg:col-start-1 lg:row-start-1" : ""
-                  }`}
-                >
-                  {/* Card number and subtitle */}
-                  <div className="flex items-center space-x-6">
-                    <span className="text-sm font-medium text-gray-400 tracking-[0.2em]">
-                      {String(index + 1).padStart(2, "0")}
-                    </span>
-                    <div className="w-8 h-px bg-gray-200 group-hover:bg-green-300 transition-colors duration-300" />
-                    <span className="text-sm font-medium text-green-600 tracking-[0.15em] uppercase">
-                      {item.subtitle}
-                    </span>
-                  </div>
-
-                  {/* Title */}
-                  <h3 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-light text-gray-900 leading-tight tracking-tight group-hover:text-green-700 transition-colors duration-300">
-                    {item.title}
-                  </h3>
-
-                  {/* Description */}
-                  <p className="text-base sm:text-lg text-gray-600 leading-relaxed font-light">
-                    {item.description}
-                  </p>
-
-                  {/* Detail text */}
-                  <p className="text-base text-gray-500 leading-relaxed font-light border-l-2 border-gray-200 pl-6 group-hover:border-green-300 transition-colors duration-300">
-                    {item.detail}
-                  </p>
-
-                  {/* Hover indicator */}
-                  <div className="flex items-center space-x-4 pt-4">
-                    <div className="w-12 h-px bg-gradient-to-r from-green-600 to-green-700 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left" />
-                    <div className="w-2 h-2 bg-green-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                  </div>
+                <div className="space-y-6">
+                  <div className="w-16 h-px bg-amber-600 mx-auto"></div>
+                  <h2 className="text-3xl md:text-4xl lg:text-5xl font-extralight text-black tracking-tight">
+                    Meet Our Team
+                  </h2>
                 </div>
               </div>
 
-              {/* Separator line */}
-              {index < visionItems.length - 1 && (
-                <div className="mt-12 md:mt-16 lg:mt-20">
-                  <div className="w-full h-px bg-gradient-to-r from-transparent via-gray-200 to-transparent" />
+              <div
+                className={`transform transition-all duration-1000 ease-out delay-300 ${
+                  isVisible
+                    ? "translate-y-0 opacity-100"
+                    : "translate-y-8 opacity-0"
+                }`}
+              >
+                <div className="max-w-4xl mx-auto">
+                  <p className="text-xl md:text-2xl text-neutral-700 font-light leading-relaxed">
+                    Our diverse team of creative professionals brings together
+                    expertise in architecture, design, and innovation to create
+                    extraordinary spaces that inspire and endure.
+                  </p>
                 </div>
-              )}
+              </div>
+            </div>
+          </div>
+        </section>
 
-              {/* Hover preview for desktop */}
-              {hoveredCard === item.id &&
-                typeof window !== "undefined" &&
-                window.innerWidth > 768 && (
+        {/* Team Members Grid */}
+        <section className="relative bg-white py-24">
+          <div className="max-w-7xl mx-auto px-6 md:px-12 lg:px-24">
+            <div
+              className={`transform transition-all duration-1000 ease-out delay-500 ${
+                isVisible
+                  ? "translate-y-0 opacity-100"
+                  : "translate-y-8 opacity-0"
+              }`}
+            >
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                {teamMembers.map((member, index) => (
                   <div
-                    className="fixed pointer-events-none z-50 opacity-0 animate-fade-in"
+                    key={member.id}
+                    className={`group cursor-pointer transition-all duration-500 ${
+                      hoveredCard === member.id ? "transform scale-105" : ""
+                    }`}
                     style={{
-                      left: `${mousePosition.x + 20}px`,
-                      top: `${mousePosition.y - 100}px`,
-                      transform: "translate(0, 0)",
+                      transitionDelay: `${index * 100}ms`,
                     }}
+                    onMouseEnter={() => setHoveredCard(member.id)}
+                    onMouseLeave={() => setHoveredCard(null)}
+                    onClick={() =>
+                      setActiveCard(activeCard === member.id ? null : member.id)
+                    }
                   >
-                    <div className="bg-white/95 backdrop-blur-sm border border-gray-200 p-4 shadow-lg max-w-xs">
-                      <p className="text-sm text-gray-600 font-medium">
-                        {item.subtitle}
-                      </p>
+                    <div className="relative overflow-hidden bg-white">
+                      {/* Image Container */}
+                      <div className="relative overflow-hidden aspect-[3/4]">
+                        <img
+                          src={member.image}
+                          alt={member.name}
+                          className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                          loading="lazy"
+                        />
+
+                        {/* Overlay */}
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+
+                        {/* Hover Content */}
+                        <div className="absolute bottom-0 left-0 right-0 p-6 transform translate-y-full group-hover:translate-y-0 transition-transform duration-300">
+                          <div className="text-white">
+                            <p className="text-sm font-light mb-2 text-amber-300">
+                              {member.specialty}
+                            </p>
+                            <p className="text-xs leading-relaxed opacity-90">
+                              {member.description}
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Member Info */}
+                      <div className="p-6 space-y-3">
+                        <div className="space-y-1">
+                          <h3 className="text-xl font-light text-black tracking-tight">
+                            {member.name}
+                          </h3>
+                          <p className="text-sm text-neutral-600 font-light tracking-wide uppercase">
+                            {member.position}
+                          </p>
+                        </div>
+
+                        {/* Decorative Line */}
+                        <div
+                          className={`h-px bg-amber-600 transition-all duration-300 ${
+                            hoveredCard === member.id ? "w-full" : "w-8"
+                          }`}
+                        ></div>
+                      </div>
                     </div>
                   </div>
-                )}
+                ))}
+              </div>
             </div>
-          ))}
-        </div>
-
-        {/* Bottom section */}
-        <div className="mt-20 sm:mt-24 md:mt-28">
-          <div className="text-center space-y-6">
-            <div className="flex items-center justify-center space-x-8">
-              <div className="w-16 h-px bg-gradient-to-r from-transparent via-green-600 to-transparent" />
-              <div className="w-3 h-3 border border-green-600 transform rotate-45" />
-              <div className="w-16 h-px bg-gradient-to-r from-transparent via-green-600 to-transparent" />
-            </div>
-            <p className="text-sm text-gray-500 font-light tracking-[0.15em] uppercase">
-              Excellence Through Innovation
-            </p>
           </div>
-        </div>
+        </section>
+
+        {/* Contact Section */}
+        <section className="relative bg-black text-white py-24">
+          <div className="max-w-7xl mx-auto px-6 md:px-12 lg:px-24">
+            <div
+              className={`transform transition-all duration-1000 ease-out delay-900 ${
+                isVisible
+                  ? "translate-y-0 opacity-100"
+                  : "translate-y-8 opacity-0"
+              }`}
+            >
+              <div className="text-center space-y-12">
+                <div className="space-y-6">
+                  <div className="w-16 h-px bg-amber-600 mx-auto"></div>
+                  <h2 className="text-3xl md:text-4xl lg:text-5xl font-extralight tracking-tight">
+                    Let&apos;s Work Together
+                  </h2>
+                </div>
+
+                <div className="space-y-8">
+                  <h3 className="text-2xl md:text-3xl font-light text-neutral-300">
+                    Ready to bring your vision to life?
+                  </h3>
+
+                  <div className="flex flex-col sm:flex-row items-center justify-center space-y-4 sm:space-y-0 sm:space-x-8">
+                    <div className="flex items-center space-x-3 text-amber-600 group cursor-pointer">
+                      <Mail className="w-5 h-5" />
+                      <span className="text-lg font-light tracking-wide">
+                        hello@archademy.com
+                      </span>
+                      <ArrowUpRight className="w-5 h-5 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform duration-300" />
+                    </div>
+
+                    <div className="flex items-center space-x-3 text-amber-600 group cursor-pointer">
+                      <Phone className="w-5 h-5" />
+                      <span className="text-lg font-light tracking-wide">
+                        +1 (555) 123-4567
+                      </span>
+                      <ArrowUpRight className="w-5 h-5 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform duration-300" />
+                    </div>
+                  </div>
+                </div>
+
+                <div className="flex justify-center space-x-8 pt-8">
+                  {socialLinks.map((social, index) => (
+                    <div
+                      key={index}
+                      className="w-12 h-12 border border-neutral-700 flex items-center justify-center hover:border-amber-600 transition-all duration-300 cursor-pointer group"
+                    >
+                      <social.icon className="w-5 h-5 text-neutral-400 group-hover:text-amber-600 transition-colors duration-300" />
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
       </div>
-    </section>
+    </div>
   );
-}
+};
+
+export default TeamSection;

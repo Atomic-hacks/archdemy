@@ -34,9 +34,9 @@ const Contact = () => {
               </h1>
 
               <p className="text-lg text-green-800 leading-relaxed max-w-lg">
-                Discover unparalleled service with Spark House Limited. Our
-                expert team delivers tailored solutions that transform your
-                vision into reality.
+                Discover unparalleled service with Archademy Limited. Our expert
+                team delivers tailored solutions that transform your vision into
+                reality.
               </p>
             </div>
 

@@ -1,10 +1,11 @@
 "use client";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState, useCallback } from "react";
 import { Plus } from "lucide-react";
 
 // Type definitions
 type ContentAlignment = "left" | "center" | "right";
 type ImagePosition = "left" | "right";
+type OverlayType = "gradient" | "solid" | "radial" | "vignette" | "none";
 
 interface HeroProps {
   title: string;
@@ -24,6 +25,12 @@ interface HeroProps {
   imagePosition?: ImagePosition;
   contentAlignment?: ContentAlignment;
 
+  // Overlay options for better readability
+  overlayType?: OverlayType;
+  overlayOpacity?: number;
+  overlayColor?: string;
+  overlayBlur?: boolean;
+
   // Accessibility
   titleId?: string;
   descriptionId?: string;
@@ -37,39 +44,219 @@ const ArchitectureHero: React.FC<HeroProps> = ({
   leftIcon: LeftIcon = Plus,
   titleClassName = "",
   descriptionClassName = "",
-  backgroundColor = "bg-gradient-to-br from-black via-gray-900 to-green-950",
+  backgroundColor = "bg-white",
   containerClassName = "",
-
   imagePosition = "right",
   contentAlignment = "center",
+  overlayType = "gradient",
+  overlayOpacity = 0.6,
+  overlayColor = "black",
+  overlayBlur = false,
   titleId,
   descriptionId,
 }) => {
-  const [scrollY, setScrollY] = useState(0);
-  const requestRef = useRef<number | null>(null);
+  const heroRef = useRef<HTMLDivElement>(null);
+  const contentRef = useRef<HTMLDivElement>(null);
+  const backgroundRef = useRef<HTMLDivElement>(null);
+  const titleRef = useRef<HTMLHeadingElement>(null);
+  const headerRef = useRef<HTMLHeadingElement>(null);
+  const descriptionRef = useRef<HTMLParagraphElement>(null);
+  const iconRef = useRef<HTMLDivElement>(null);
+  const overlayRef = useRef<HTMLDivElement>(null);
+  const readabilityOverlayRef = useRef<HTMLDivElement>(null);
+  const accentRef = useRef<HTMLDivElement>(null);
 
-  const handleScroll = () => {
-    const newScrollY = window.scrollY;
+  const [mounted, setMounted] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
+  const [screenHeight, setScreenHeight] = useState(0);
 
-    // Cancel any pending animation frame to avoid jank
-    if (requestRef.current) {
-      cancelAnimationFrame(requestRef.current);
-    }
-
-    requestRef.current = requestAnimationFrame(() => {
-      setScrollY(newScrollY);
-    });
-  };
-
+  // Detect mobile and screen dimensions
   useEffect(() => {
-    window.addEventListener("scroll", handleScroll, { passive: true });
+    const checkMobile = () => {
+      const mobile = window.innerWidth < 768;
+      const height = window.innerHeight;
+      setIsMobile(mobile);
+      setScreenHeight(height);
+    };
+
+    checkMobile();
+    setMounted(true);
+
+    window.addEventListener("resize", checkMobile);
+    window.addEventListener("orientationchange", () => {
+      setTimeout(checkMobile, 100);
+    });
+
     return () => {
-      window.removeEventListener("scroll", handleScroll);
-      if (requestRef.current) cancelAnimationFrame(requestRef.current);
+      window.removeEventListener("resize", checkMobile);
+      window.removeEventListener("orientationchange", checkMobile);
     };
   }, []);
 
-  const displacement = Math.min(scrollY * 0.25, 100);
+  // Generate overlay styles based on type
+  const getOverlayStyles = useCallback(() => {
+    const opacity = overlayOpacity;
+    const color = overlayColor;
+
+    switch (overlayType) {
+      case "gradient":
+        return {
+          background: `linear-gradient(135deg, ${color}/${
+            opacity * 0.8
+          } 0%, transparent 50%, ${color}/${opacity * 0.4} 100%)`,
+        };
+      case "solid":
+        return {
+          backgroundColor: `${color}`,
+          opacity: opacity * 0.5,
+        };
+      case "radial":
+        return {
+          background: `radial-gradient(circle at center, transparent 20%, ${color}/${
+            opacity * 0.7
+          } 80%)`,
+        };
+      case "vignette":
+        return {
+          background: `radial-gradient(ellipse at center, transparent 0%, transparent 30%, ${color}/${
+            opacity * 0.3
+          } 70%, ${color}/${opacity * 0.8} 100%)`,
+        };
+      case "none":
+        return {
+          display: "none",
+        };
+      default:
+        return {};
+    }
+  }, [overlayType, overlayOpacity, overlayColor]);
+
+  // Optimized scroll handler with mobile considerations
+  const handleScroll = useCallback(() => {
+    if (!heroRef.current) return;
+
+    const scrolled = window.pageYOffset;
+    const heroHeight = heroRef.current.offsetHeight;
+    const scrollProgress = Math.min(scrolled / (heroHeight * 0.8), 1);
+
+    // Reduce parallax intensity on mobile for better performance
+    const parallaxIntensity = isMobile ? 0.4 : 0.8;
+
+    // Background parallax - subtle movement
+    if (backgroundRef.current) {
+      const backgroundMove = scrolled * 0.15 * parallaxIntensity;
+      const backgroundScale = 1 + scrollProgress * 0.05;
+      backgroundRef.current.style.transform = `translate3d(0, ${backgroundMove}px, 0) scale(${backgroundScale})`;
+
+      // Subtle blur and brightness change
+      const blurAmount = scrollProgress * (isMobile ? 0.5 : 1);
+      const brightness = 1 - scrollProgress * 0.1;
+      const filterBlur = overlayBlur
+        ? `blur(${blurAmount + 1}px)`
+        : `blur(${blurAmount}px)`;
+      backgroundRef.current.style.filter = `${filterBlur} brightness(${brightness})`;
+    }
+
+    // Content container parallax
+    if (contentRef.current) {
+      const contentMove = scrolled * 0.3 * parallaxIntensity;
+      const contentScale = Math.max(1 - scrollProgress * 0.1, 0.9);
+      const contentOpacity = Math.max(1 - scrollProgress * 0.8, 0);
+      contentRef.current.style.transform = `translate3d(0, ${contentMove}px, 0) scale(${contentScale})`;
+      contentRef.current.style.opacity = contentOpacity.toString();
+    }
+
+    // Header parallax
+    if (headerRef.current) {
+      const headerMove = scrolled * 0.2 * parallaxIntensity;
+      const headerOpacity = Math.max(1 - scrollProgress * 0.6, 0);
+      headerRef.current.style.transform = `translate3d(0, ${headerMove}px, 0)`;
+      headerRef.current.style.opacity = headerOpacity.toString();
+    }
+
+    // Description parallax
+    if (descriptionRef.current) {
+      const descMove = scrolled * 0.35 * parallaxIntensity;
+      const descOpacity = Math.max(1 - scrollProgress * 0.9, 0);
+      descriptionRef.current.style.transform = `translate3d(0, ${descMove}px, 0)`;
+      descriptionRef.current.style.opacity = descOpacity.toString();
+    }
+
+    // Icon parallax
+    if (iconRef.current) {
+      const iconMove = scrolled * 0.25 * parallaxIntensity;
+      const iconRotate = scrollProgress * (isMobile ? 45 : 90);
+      const iconScale = Math.max(1 - scrollProgress * 0.3, 0.7);
+      iconRef.current.style.transform = `translate3d(0, ${iconMove}px, 0) rotate(${iconRotate}deg) scale(${iconScale})`;
+    }
+
+    // Title parallax - background title
+    if (titleRef.current) {
+      const titleMove = scrolled * 0.1 * parallaxIntensity;
+      const titleOpacity = Math.max(1 - scrollProgress * 0.4, 0);
+      titleRef.current.style.transform = `translate3d(0, ${titleMove}px, 0)`;
+      titleRef.current.style.opacity = titleOpacity.toString();
+    }
+
+    // Accent line parallax
+    if (accentRef.current) {
+      const accentMove = scrolled * 0.4 * parallaxIntensity;
+      const accentOpacity = Math.max(1 - scrollProgress * 0.7, 0);
+      accentRef.current.style.transform = `translate3d(0, ${accentMove}px, 0)`;
+      accentRef.current.style.opacity = accentOpacity.toString();
+    }
+
+    // Original overlay effect
+    if (overlayRef.current) {
+      const overlayOpacity = Math.min(scrollProgress * 0.2, 0.15);
+      overlayRef.current.style.opacity = overlayOpacity.toString();
+    }
+
+    // Readability overlay - slightly increases opacity on scroll for better text contrast
+    if (readabilityOverlayRef.current && overlayType !== "none") {
+      const baseOpacity = overlayOpacity * 0.7;
+      const scrollOpacity = Math.min(scrollProgress * 0.3, 0.2);
+      readabilityOverlayRef.current.style.opacity = (
+        baseOpacity + scrollOpacity
+      ).toString();
+    }
+  }, [isMobile, overlayBlur, overlayOpacity, overlayType]);
+
+  useEffect(() => {
+    if (!mounted) return;
+
+    let rafId: number;
+    const optimizedHandler = () => {
+      if (rafId) {
+        cancelAnimationFrame(rafId);
+      }
+      rafId = requestAnimationFrame(handleScroll);
+    };
+
+    window.addEventListener("scroll", optimizedHandler, {
+      passive: true,
+      capture: false,
+    });
+
+    handleScroll();
+
+    return () => {
+      window.removeEventListener("scroll", optimizedHandler);
+      if (rafId) {
+        cancelAnimationFrame(rafId);
+      }
+    };
+  }, [mounted, handleScroll]);
+
+  if (!mounted) {
+    return (
+      <div className="relative h-screen overflow-hidden bg-white">
+        <div className="absolute inset-0 flex items-center justify-center">
+          <div className="text-neutral-900 text-xl font-light">Loading...</div>
+        </div>
+      </div>
+    );
+  }
 
   const contentAlignClass: Record<ContentAlignment, string> = {
     left: "text-left",
@@ -79,79 +266,236 @@ const ArchitectureHero: React.FC<HeroProps> = ({
 
   return (
     <div
-      className={`relative min-h-screen w-full overflow-hidden ${backgroundColor} ${containerClassName}`}
+      ref={heroRef}
+      className={`relative overflow-hidden ${backgroundColor} ${containerClassName}`}
+      style={{
+        height: isMobile ? `${Math.max(screenHeight, 600)}px` : "100vh",
+        willChange: "transform",
+        perspective: "1000px",
+      }}
     >
-      {/* Background image with green overlay */}
+      {/* Background image with subtle overlay */}
       {backgroundImage && (
-        <div className="absolute inset-0 z-0">
+        <div
+          ref={backgroundRef}
+          className="absolute inset-0 z-0"
+          style={{
+            transform: "scale(1.05)",
+            willChange: "transform, filter",
+            transformOrigin: "center center",
+          }}
+        >
           <img
             src={backgroundImage}
             alt="Hero background"
             className="absolute inset-0 w-full h-full object-cover"
           />
-          <div className="absolute inset-0 bg-gradient-to-br from-black/70 via-green-900/40 to-black/80" />
         </div>
       )}
 
-      {/* Decorative elements */}
-      <div className="absolute inset-0 z-0">
-        <div className="absolute top-1/4 right-1/4 w-96 h-96 bg-green-500/10 rounded-full blur-3xl" />
-        <div className="absolute bottom-1/3 left-1/4 w-80 h-80 bg-green-400/5 rounded-full blur-2xl" />
+      {/* Readability Overlay - New configurable overlay */}
+      {overlayType !== "none" && (
+        <div
+          ref={readabilityOverlayRef}
+          className="absolute inset-0 z-5"
+          style={{
+            ...getOverlayStyles(),
+            willChange: "opacity",
+            backdropFilter: overlayBlur ? "blur(2px)" : "none",
+          }}
+        />
+      )}
+
+      {/* Original subtle overlay for better contrast */}
+      <div
+        ref={overlayRef}
+        className="absolute inset-0 bg-gradient-to-br from-black/10 via-transparent to-amber-900/5 z-6"
+        style={{ willChange: "opacity" }}
+      />
+
+      {/* Mobile Layout */}
+      <div className="absolute inset-0 z-10 md:hidden">
+        <div className="flex flex-col h-full justify-center items-center px-6 py-8">
+          {/* Accent Line */}
+          <div
+            ref={accentRef}
+            className="mb-8"
+            style={{ willChange: "transform, opacity" }}
+          >
+            <div className="w-16 h-px bg-gradient-to-r from-amber-600 to-amber-700 drop-shadow-sm"></div>
+          </div>
+
+          {/* Content Container */}
+          <div
+            ref={contentRef}
+            className="text-center max-w-sm"
+            style={{
+              willChange: "transform, opacity",
+              transformStyle: "preserve-3d",
+            }}
+          >
+            {/* Header */}
+            <div
+              ref={headerRef}
+              className="mb-6"
+              style={{ willChange: "transform, opacity" }}
+            >
+              <h1
+                className="text-lg font-light text-amber-900 tracking-widest mb-4 drop-shadow-sm"
+                style={{
+                  fontWeight: "300",
+                  letterSpacing: "0.15em",
+                  textShadow: "0 1px 2px rgba(0,0,0,0.1)",
+                }}
+              >
+                {descriptionHeader}
+              </h1>
+            </div>
+
+            {/* Description */}
+            <div
+              ref={descriptionRef}
+              className="mb-8"
+              style={{ willChange: "transform, opacity" }}
+            >
+              <p
+                id={descriptionId}
+                className={`text-base text-neutral-300 leading-relaxed font-light ${contentAlignClass[contentAlignment]} ${descriptionClassName} drop-shadow-sm`}
+                style={{
+                  fontWeight: "300",
+                  letterSpacing: "0.01em",
+                  lineHeight: "1.6",
+                  textShadow: "0 1px 2px rgba(0,0,0,0.1)",
+                }}
+              >
+                {description}
+              </p>
+            </div>
+
+            {/* Icon */}
+            {imagePosition === "right" && (
+              <div
+                ref={iconRef}
+                className="flex justify-center"
+                style={{ willChange: "transform" }}
+              >
+                <div className="p-4 border border-amber-600/30 rounded-full backdrop-blur-sm drop-shadow-md">
+                  <LeftIcon className="w-6 h-6 text-amber-800" />
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
       </div>
 
-      {/* Main layout - Better mobile centering */}
-      <main
-        className="relative z-10 h-screen flex flex-col md:flex-row items-center justify-center md:justify-between px-4 sm:px-6 md:px-8 lg:px-16 xl:px-20 2xl:px-24 transition-transform duration-[30ms] ease-[cubic-bezier(0.25, 0.46, 0.45, 0.94)] will-change-transform pt-8 pb-24 sm:pt-12 sm:pb-28 md:pt-16 md:pb-16"
-        style={{
-          transform: `translateY(${displacement}px)`,
-        }}
-      >
-        <div className="flex-1 mt-20 md:m-0 max-w-xs sm:max-w-sm md:max-w-md lg:max-w-xl xl:max-w-2xl 2xl:max-w-4xl mx-auto md:mx-0 text-center md:text-left">
-          <h1 className="text-base sm:text-lg md:text-xl lg:text-2xl xl:text-3xl font-semibold leading-tight mb-2 sm:mb-3 md:mb-4 lg:mb-6 bg-gradient-to-r from-green-300 via-green-400 to-green-500 bg-clip-text text-transparent">
-            {descriptionHeader}
-          </h1>
-          <p
-            id={descriptionId}
-            className={`text-base lg:text-lg xl:text-xl font-light leading-relaxed mb-4 sm:mb-6 md:mb-8 bg-gradient-to-r from-white via-green-100 to-green-200 bg-clip-text text-transparent ${contentAlignClass[contentAlignment]} ${descriptionClassName}`}
-          >
-            {description}
-          </p>
-        </div>
+      {/* Desktop Layout */}
+      <div className="absolute inset-0 z-10 hidden md:block">
+        <div className="h-full flex items-center">
+          <div className="max-w-7xl mx-auto px-12 lg:px-20 xl:px-32 w-full">
+            <div className="grid grid-cols-12 gap-8 items-center">
+              {/* Left Side - Content */}
+              <div className="col-span-7 lg:col-span-8">
+                {/* Accent Line */}
+                <div
+                  ref={accentRef}
+                  className="mb-8"
+                  style={{ willChange: "transform, opacity" }}
+                >
+                  <div className="w-24 h-px bg-gradient-to-r from-amber-600 to-amber-700 drop-shadow-sm"></div>
+                </div>
 
-        {imagePosition === "right" && (
-          <div className="flex-shrink-0 mt-2 md:mt-0 md:ml-6 lg:ml-8 xl:ml-12">
-            <LeftIcon className="w-5 h-5 sm:w-6 sm:h-6 md:w-7 md:h-7 lg:w-8 lg:h-8 xl:w-10 xl:h-10 text-green-400 opacity-70 hover:opacity-100 transition-opacity" />
+                {/* Content Container */}
+                <div
+                  ref={contentRef}
+                  className="max-w-2xl"
+                  style={{
+                    willChange: "transform, opacity",
+                    transformStyle: "preserve-3d",
+                  }}
+                >
+                  {/* Header */}
+                  <div
+                    ref={headerRef}
+                    className="mb-8"
+                    style={{ willChange: "transform, opacity" }}
+                  >
+                    <h1
+                      className="text-2xl lg:text-3xl font-light text-amber-900 tracking-widest mb-6 drop-shadow-sm"
+                      style={{
+                        fontWeight: "300",
+                        letterSpacing: "0.12em",
+                        textShadow: "0 1px 3px rgba(0,0,0,0.1)",
+                      }}
+                    >
+                      {descriptionHeader}
+                    </h1>
+                  </div>
+
+                  {/* Description */}
+                  <div
+                    ref={descriptionRef}
+                    className="mb-12"
+                    style={{ willChange: "transform, opacity" }}
+                  >
+                    <p
+                      id={descriptionId}
+                      className={`text-lg lg:text-xl text-neutral-200 leading-relaxed font-light ${contentAlignClass[contentAlignment]} ${descriptionClassName} drop-shadow-sm`}
+                      style={{
+                        fontWeight: "300",
+                        letterSpacing: "0.01em",
+                        lineHeight: "1.7",
+                        textShadow: "0 1px 3px rgba(0,0,0,0.1)",
+                      }}
+                    >
+                      {description}
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Right Side - Icon */}
+              <div className="col-span-5 lg:col-span-4 flex justify-center lg:justify-end">
+                {imagePosition === "right" && (
+                  <div ref={iconRef} style={{ willChange: "transform" }}>
+                    <div className="p-8 border border-amber-600/30 rounded-full backdrop-blur-sm hover:bg-amber-100/90 transition-all duration-500 drop-shadow-lg">
+                      <LeftIcon className="w-12 h-12 lg:w-16 lg:h-16 text-amber-800" />
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
           </div>
-        )}
-      </main>
+        </div>
+      </div>
 
-      {/* Title Overlay - Moved higher up on mobile */}
-      <div className="fixed left-0 right-0 z-5 pointer-events-none overflow-hidden bottom-32 md:bottom-12 h-40">
+      {/* Background Title - Subtle Typography */}
+      <div className="absolute inset-0 z-5 pointer-events-none overflow-hidden flex items-center justify-center">
         <h1
+          ref={titleRef}
           id={titleId}
-          className={`relative w-full text-center transition-transform duration-[30ms] ease-[cubic-bezier(0.25, 0.46, 0.45, 0.94)] will-change-transform font-bold  bg-gradient-to-br from-green-900/60 via-green-800/70 to-green-700/75 bg-clip-text text-transparent text-4xl md:text-5xl  ${titleClassName}`}
+          className={`text-amber-900/10 font-extralight tracking-widest select-none ${titleClassName}`}
           style={{
-            transform: `translateY(${displacement}px)`,
-            textShadow: "0 0 40px rgba(34, 197, 94, 0.1)",
-            fontSize: "clamp(2.5rem, 12vw, 12rem)",
-            lineHeight: "0.85",
+            fontSize: "clamp(4rem, 15vw, 20rem)",
+            fontWeight: "100",
+            letterSpacing: "0.2em",
+            lineHeight: "0.9",
+            willChange: "transform, opacity",
+            transformStyle: "preserve-3d",
           }}
         >
-          <span className="block max-w-full break-words hyphens-auto" lang="en">
-            {title}
-          </span>
+          {title}
         </h1>
       </div>
 
       {/* Subtle grid pattern overlay */}
       <div
-        className="absolute inset-0 z-0 opacity-5"
+        className="absolute inset-0 z-0 opacity-3"
         style={{
           backgroundImage: `
-            linear-gradient(rgba(34, 197, 94, 0.1) 1px, transparent 1px),
-            linear-gradient(90deg, rgba(34, 197, 94, 0.1) 1px, transparent 1px)
+            linear-gradient(rgba(120, 53, 15, 0.04) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(120, 53, 15, 0.04) 1px, transparent 1px)
           `,
-          backgroundSize: "50px 50px",
+          backgroundSize: "60px 60px",
         }}
       />
     </div>

@@ -1,147 +1,215 @@
-import React from "react";
-import { Check } from "lucide-react";
+"use client";
+import React, { useEffect, useState } from "react";
+import {
+  ArrowUpRight,
+  Users,
+  Briefcase,
+  Clock,
+  Facebook,
+  Twitter,
+  Linkedin,
+  Home,
+} from "lucide-react";
 
 interface OurStoryProps {
-  title?: string;
-  subtitle?: string;
-  description?: string;
-  image?: string;
-  features?: Array<{
-    title: string;
-    icon?: React.ComponentType<{ className?: string }>;
-  }>;
   containerClassName?: string;
 }
 
-const OurStory: React.FC<OurStoryProps> = ({
-  title = "Our Story",
-  subtitle = "What Sets Us Apart",
-  description = "Welcome to Spark House Limited, where innovation meets excellence in construction and project management. Founded with a vision to redefine the industry standards, we are a dynamic firm dedicated to delivering exceptional results for our clients. With a focus on quality, efficiency, and client satisfaction, we have established ourselves as a trusted partner in the construction and project management sector.",
-  image = "/house1.jpg",
-  features = [
-    { title: "Expertise" },
-    { title: "Innovation" },
-    { title: "Quality Assurance" },
-    { title: "Client-Centric Approach" },
-  ],
-  containerClassName = "",
-}) => {
+const OurStory: React.FC<OurStoryProps> = ({ containerClassName = "" }) => {
+  const [isVisible, setIsVisible] = useState(false);
+  const [activeSection, setActiveSection] = useState(0);
+  //const sectionRef = useRef<HTMLElement>(null);
+
+  useEffect(() => {
+    const timer = setTimeout(() => setIsVisible(true), 300);
+    return () => clearTimeout(timer);
+  }, []);
+
+  // Auto-cycling active section
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setActiveSection((prev) => (prev + 1) % 3);
+    }, 4000);
+
+    return () => clearInterval(interval);
+  }, []);
+
+  const stats = [
+    { number: "50", label: "Projects Completed", icon: Briefcase },
+    { number: "15+", label: "Clients", icon: Users },
+    { number: "1", label: "Years In Service", icon: Clock },
+  ];
+
+  const socialLinks = [
+    { icon: Home, label: "Houzz" },
+    { icon: Facebook, label: "Facebook" },
+    { icon: Twitter, label: "Twitter" },
+    { icon: Linkedin, label: "LinkedIn" },
+  ];
+
   return (
-    <section
-      className={`relative py-16 sm:py-24 md:py-32 lg:py-48 bg-gradient-to-br bg-white overflow-hidden ${containerClassName}`}
-    >
-      {/* Decorative background elements */}
-      <div className="absolute inset-0 z-0">
-        <div className="absolute top-1/4 right-1/4 w-96 h-96 bg-green-500/10 rounded-full blur-3xl" />
-        <div className="absolute bottom-1/3 left-1/4 w-80 h-80 bg-green-400/5 rounded-full blur-2xl" />
-      </div>
-
-      {/* Subtle grid pattern overlay */}
-      <div
-        className="absolute inset-0 z-0 opacity-5"
-        style={{
-          backgroundImage: `
-            linear-gradient(rgba(34, 197, 94, 0.1) 1px, transparent 1px),
-            linear-gradient(90deg, rgba(34, 197, 94, 0.1) 1px, transparent 1px)
-          `,
-          backgroundSize: "50px 50px",
-        }}
-      />
-
-      <div className="relative z-10 max-w-7xl mx-auto px-6 md:px-8 lg:px-16">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
-          {/* Image Section */}
-          <div className="relative order-2 lg:order-1">
-            <div className="relative">
-              {/* Green accent border */}
-              <div className="absolute -left-4 top-0 bottom-0 w-1 bg-gradient-to-b from-green-400 to-green-600" />
-
-              {/* Image container */}
-              <div className="relative overflow-hidden rounded-lg">
-                <img
-                  src={image}
-                  alt="Our Story"
-                  className="w-full h-[600px] object-cover grayscale hover:grayscale-0 transition-all duration-700"
-                />
-
-                {/* Image overlay */}
-                <div className="absolute inset-0 bg-gradient-to-br from-black/30 via-green-900/20 to-black/50" />
-              </div>
-
-              {/* Decorative corner element */}
-              <div className="absolute -top-4 -right-4 w-8 h-8">
-                <div className="w-full h-1 bg-gradient-to-r from-green-400 to-green-500 mb-2" />
-                <div className="w-1 h-full bg-gradient-to-b from-green-400 to-green-500" />
-              </div>
+    <div className={`relative min-h-screen bg-white ${containerClassName}`}>
+      {/* Main Content */}
+      <div className="relative z-10">
+        {/* About Section */}
+        <section className="relative bg-neutral-50 py-24 overflow-hidden">
+          {/* Background Text */}
+          <div className="absolute inset-0 overflow-hidden pointer-events-none">
+            <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 select-none">
+              <h1
+                className="text-6xl md:text-7xl lg:text-8xl xl:text-9xl font-thin text-neutral-100 whitespace-nowrap"
+                style={{
+                  letterSpacing: "0.05em",
+                  fontWeight: "100",
+                }}
+              >
+                ABOUT US
+              </h1>
             </div>
           </div>
 
-          {/* Content Section */}
-          <div className="relative order-1 lg:order-2 space-y-8">
-            {/* Section Header */}
-            <div className="space-y-6">
-              <div className="flex items-center space-x-4">
-                <div className="w-12 h-px bg-gradient-to-r from-green-400 to-green-500" />
-                <span className="text-sm font-medium text-green-400 tracking-[0.15em] uppercase">
-                  About Us
-                </span>
+          <div className="relative z-10 max-w-7xl mx-auto px-6 md:px-12 lg:px-24">
+            <div className="text-center space-y-12">
+              <div
+                className={`transform transition-all duration-1000 ease-out ${
+                  isVisible
+                    ? "translate-y-0 opacity-100"
+                    : "translate-y-8 opacity-0"
+                }`}
+              >
+                <div className="space-y-6">
+                  <div className="w-16 h-px bg-amber-600 mx-auto"></div>
+                  <h2 className="text-3xl md:text-4xl lg:text-5xl font-extralight text-black tracking-tight">
+                    About Us
+                  </h2>
+                </div>
               </div>
 
-              <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-light leading-tight">
-                <span className="bg-gradient-to-r from-green-300 via-green-400 to-green-500 bg-clip-text text-transparent">
-                  {title}
-                </span>
-              </h2>
+              <div
+                className={`transform transition-all duration-1000 ease-out delay-300 ${
+                  isVisible
+                    ? "translate-y-0 opacity-100"
+                    : "translate-y-8 opacity-0"
+                }`}
+              >
+                <h1 className="text-5xl md:text-6xl lg:text-7xl font-extralight text-black leading-[0.9] tracking-tight mb-8">
+                  ARCHADEMY
+                </h1>
+              </div>
 
-              <div className="w-16 h-1 bg-gradient-to-r from-green-400 to-green-500" />
+              <div
+                className={`transform transition-all duration-1000 ease-out delay-500 ${
+                  isVisible
+                    ? "translate-y-0 opacity-100"
+                    : "translate-y-8 opacity-0"
+                }`}
+              >
+                <div className="max-w-4xl mx-auto">
+                  <p className="text-xl md:text-2xl text-neutral-700 font-light leading-relaxed">
+                    At <span className="text-amber-600">ADCL</span>, we are
+                    dedicated to creating unique and innovative designs using
+                    social peculiarities and sustainable practices. We are on a
+                    mission to produce flexible, relatable, timeless designers
+                    and designs.
+                  </p>
+                </div>
+              </div>
             </div>
+          </div>
+        </section>
 
-            {/* Description */}
-            <div className="space-y-6">
-              <p className="text-lg md:text-xl leading-relaxed font-light bg-gradient-to-r from-neutral-900 via-green-800 to-neutral-900 bg-clip-text text-transparent">
-                {description}
-              </p>
-            </div>
-
-            {/* What Sets Us Apart */}
-            <div className="space-y-6">
-              <h3 className="text-xl md:text-2xl font-semibold bg-gradient-to-r from-green-300 via-green-400 to-green-500 bg-clip-text text-transparent">
-                {subtitle}
-              </h3>
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                {features.map((feature, index) => (
+        {/* Statistics Section */}
+        <section className="relative bg-white py-24">
+          <div className="max-w-7xl mx-auto px-6 md:px-12 lg:px-24">
+            <div
+              className={`transform transition-all duration-1000 ease-out delay-700 ${
+                isVisible
+                  ? "translate-y-0 opacity-100"
+                  : "translate-y-8 opacity-0"
+              }`}
+            >
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-16 md:gap-8">
+                {stats.map((stat, index) => (
                   <div
                     key={index}
-                    className="flex items-center space-x-3 group"
+                    className={`text-center space-y-6 transition-all duration-500 ${
+                      activeSection === index ? "transform scale-105" : ""
+                    }`}
+                    onMouseEnter={() => setActiveSection(index)}
                   >
-                    <div className="flex-shrink-0 w-5 h-5 rounded-full bg-gradient-to-r from-green-400 to-green-500 flex items-center justify-center group-hover:scale-110 transition-transform duration-200">
-                      {feature.icon ? (
-                        <feature.icon className="w-3 h-3 text-black" />
-                      ) : (
-                        <Check className="w-3 h-3 text-black" />
-                      )}
+                    <div className="flex justify-center">
+                      <div
+                        className={`w-16 h-16 rounded-full flex items-center justify-center transition-all duration-500 ${
+                          activeSection === index
+                            ? "bg-amber-600 text-white"
+                            : "bg-neutral-100 text-amber-600"
+                        }`}
+                      >
+                        <stat.icon className="w-8 h-8" />
+                      </div>
                     </div>
-                    <span className="text-base md:text-lg font-medium bg-gradient-to-r from-neutral-900 via-green-800 to-neutral-900 bg-clip-text text-transparent group-hover:from-green-300 group-hover:to-green-400 transition-all duration-200">
-                      {feature.title}
-                    </span>
+                    <div className="space-y-2">
+                      <h3 className="text-4xl md:text-5xl font-extralight text-black">
+                        {stat.number}
+                      </h3>
+                      <p className="text-sm font-light text-neutral-600 tracking-wide uppercase">
+                        {stat.label}
+                      </p>
+                    </div>
                   </div>
                 ))}
               </div>
             </div>
+          </div>
+        </section>
 
-            {/* Decorative element */}
-            <div className="pt-8">
-              <div className="flex items-center space-x-4 opacity-70">
-                <div className="w-8 h-px bg-gradient-to-r from-green-400 to-green-500" />
-                <div className="w-2 h-2 bg-green-400 rounded-full" />
-                <div className="w-12 h-px bg-gradient-to-r from-green-500 to-green-600" />
+        {/* Get In Touch Section */}
+        <section className="relative bg-black text-white py-24">
+          <div className="max-w-7xl mx-auto px-6 md:px-12 lg:px-24">
+            <div
+              className={`transform transition-all duration-1000 ease-out delay-900 ${
+                isVisible
+                  ? "translate-y-0 opacity-100"
+                  : "translate-y-8 opacity-0"
+              }`}
+            >
+              <div className="text-center space-y-12">
+                <div className="space-y-6">
+                  <div className="w-16 h-px bg-black mx-auto"></div>
+                  <h2 className="text-3xl md:text-4xl lg:text-5xl font-extralight tracking-tight">
+                    Get In Touch
+                  </h2>
+                </div>
+
+                <div className="space-y-8">
+                  <h3 className="text-2xl md:text-3xl font-light text-neutral-300">
+                    Ready to create something extraordinary?
+                  </h3>
+
+                  <div className="flex items-center justify-center space-x-3 text-amber-600 group cursor-pointer">
+                    <span className="text-lg font-light tracking-wide">
+                      CONTACT US
+                    </span>
+                    <ArrowUpRight className="w-5 h-5 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform duration-300" />
+                  </div>
+                </div>
+
+                <div className="flex justify-center space-x-8 pt-8">
+                  {socialLinks.map((social, index) => (
+                    <div
+                      key={index}
+                      className="w-12 h-12 border border-neutral-700 flex items-center justify-center hover:border-amber-600 transition-all duration-300 cursor-pointer group"
+                    >
+                      <social.icon className="w-5 h-5 text-neutral-400 group-hover:text-amber-600 transition-colors duration-300" />
+                    </div>
+                  ))}
+                </div>
               </div>
             </div>
           </div>
-        </div>
+        </section>
       </div>
-    </section>
+    </div>
   );
 };
 
