@@ -8,6 +8,7 @@ import {
   Clock,
   Linkedin,
   Instagram,
+  Facebook,
   ArrowUpRight,
   Send,
   User,
@@ -126,9 +127,12 @@ const ContactPage = () => {
                         <h3 className="text-lg font-light text-black tracking-wide">
                           Call Us
                         </h3>
-                        <p className="text-base text-neutral-600 font-light">
-                          08088035933
-                        </p>
+                        <a
+                          href="tel:09042131257"
+                          className="text-base text-neutral-600 font-light hover:text-amber-600 transition-colors"
+                        >
+                          09042131257
+                        </a>
                       </div>
                     </div>
 
@@ -157,9 +161,9 @@ const ContactPage = () => {
                           Our Location
                         </h3>
                         <p className="text-base text-neutral-600 font-light leading-relaxed">
-                          No.5 Pius Uchendu Street,
+                          15KM East-West Road,
                           <br />
-                          NTA Road, Port Harcourt,
+                          Off Obiri-Ikwerre Flyover,
                           <br />
                           Port Harcourt, Nigeria
                         </p>
@@ -189,16 +193,28 @@ const ContactPage = () => {
                         </h3>
                         <div className="flex items-center space-x-3">
                           <a
-                            href="#"
+                            href="https://www.linkedin.com/company/archademy-limited/"
+                            target="_blank"
+                            rel="noopener noreferrer"
                             className="w-10 h-10 bg-amber-600 text-white flex items-center justify-center hover:bg-amber-700 transition-colors duration-300"
                           >
                             <Linkedin className="w-4 h-4" />
                           </a>
                           <a
-                            href="#"
+                            href="https://www.instagram.com/archademylimited/"
+                            target="_blank"
+                            rel="noopener noreferrer"
                             className="w-10 h-10 bg-amber-600 text-white flex items-center justify-center hover:bg-amber-700 transition-colors duration-300"
                           >
                             <Instagram className="w-4 h-4" />
+                          </a>
+                          <a
+                            href="https://www.facebook.com/ArchademyLimited/"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="w-10 h-10 bg-amber-600 text-white flex items-center justify-center hover:bg-amber-700 transition-colors duration-300"
+                          >
+                            <Facebook className="w-4 h-4" />
                           </a>
                         </div>
                       </div>
@@ -295,7 +311,7 @@ const ContactPage = () => {
                           name="phone"
                           value={formData.phone}
                           onChange={handleInputChange}
-                          placeholder="+234 808 803 5933"
+                          placeholder="0904 213 1257"
                           className="w-full px-4 py-3 bg-white/80 border border-neutral-200 focus:outline-none focus:border-amber-600 transition-all duration-300 text-black placeholder-neutral-400 font-light"
                         />
                       </div>
