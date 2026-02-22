@@ -3,6 +3,7 @@ import { Poppins, Inter } from "next/font/google";
 import "./globals.css";
 import Footer from "@/components/layout/Footer";
 import Navbar from "@/components/layout/Navbar";
+import ChatWidget from "@/components/ChatWidget";
 
 export const poppins = Poppins({
   subsets: ["latin"],
@@ -31,6 +32,7 @@ export default function RootLayout({
       <body className={`${poppins.className} ${inter.className} antialiased`}>
         <Navbar />
         {children}
+        <ChatWidget />
         <Footer />
       </body>
     </html>
