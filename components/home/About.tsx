@@ -36,7 +36,9 @@ export default function About() {
                       <h1 className="text-5xl md:text-6xl lg:text-7xl font-extralight text-black leading-[0.9] tracking-tight">
                         WELCOME TO
                         <br />
-                        <span className="font-light">ARCHADEMY</span>
+                        <span className="font-light">
+                          ARCHADEMY <p className="text-2xl uppercase">( Design Company Limited )</p>
+                        </span>
                       </h1>
 
                       <p className="text-lg md:text-xl text-neutral-600 font-light tracking-wide">
@@ -55,15 +57,17 @@ export default function About() {
                 >
                   <div className="space-y-8 max-w-2xl">
                     <p className="text-base md:text-lg text-neutral-700 leading-relaxed font-light">
-                      Architecture is beyond structures. It tells a story about
-                      people while highlighting culture, environment and values.
+                      Architecture is beyond building design. It&appos;s an
+                      unfolding interplay of real life stories that highlight
+                      people, cultures, environment and values.
                     </p>
 
                     <p className="text-base md:text-lg text-neutral-700 leading-relaxed font-light">
-                      At ADCL, we are dedicated to creating unique and
-                      innovative designs using social peculiarities and
-                      sustainable practices. We are on a mission to produce
-                      flexible, relatable, timeless designs and designers.
+                      At ADCL, we create, innovate and reimagine social
+                      peculiarities and sustainable practices through design.
+                      Our perspective on architecture reshapes the designer and
+                      design delivery into timeless and responsive, valuable
+                      services and products.
                     </p>
                   </div>
                 </motion.div>
@@ -135,8 +139,9 @@ export default function About() {
 
               <div className="max-w-4xl mx-auto">
                 <p className="text-xl md:text-2xl text-neutral-700 font-light leading-relaxed">
-                  We are dedicated to creating unique and innovative designs
-                  using social peculiarities and sustainable practices.
+                  To create innovative architectural designs based on social
+                  peculiarities and sustainable practices, while delivering
+                  timeless and valuable solutions for our clients.
                 </p>
               </div>
             </div>
@@ -210,15 +215,12 @@ export default function About() {
               <div className="space-y-6">
                 <div className="w-16 h-px bg-amber-600 mx-auto"></div>
                 <h2 className="text-3xl md:text-4xl lg:text-5xl font-extralight text-black tracking-tight">
-                  Leadership
+                  Vision
                 </h2>
               </div>
 
               <div className="max-w-2xl mx-auto space-y-8">
-                <h3 className="text-2xl md:text-3xl font-light text-neutral-800">
-                  Interior Solutions Owner & Co-Owner
-                </h3>
-                <p className="text-lg text-neutral-600 font-light leading-relaxed">
+                <p className="text-xl text-neutral-600 font-light leading-relaxed">
                   Leading the vision for innovative architectural solutions that
                   bridge traditional design with contemporary needs.
                 </p>

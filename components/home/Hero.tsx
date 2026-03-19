@@ -132,7 +132,7 @@ export default function Hero() {
       textBackdropRef.current.style.opacity = backdropOpacity.toString();
     }
 
-    // Overlay effect - subtle
+    // Scroll-driven overlay - subtly deepens on scroll
     if (overlayRef.current) {
       const overlayOpacity = Math.min(scrollProgress * 0.3, 0.2);
       overlayRef.current.style.opacity = overlayOpacity.toString();
@@ -198,7 +198,7 @@ export default function Hero() {
           ref={backgroundRef}
           className="absolute inset-0"
           style={{
-            transform: "scale(1.1)",
+            transform: "scale(1)",
             willChange: "transform, filter",
             transformOrigin: "center center",
           }}
@@ -208,7 +208,7 @@ export default function Hero() {
             mediaItems={[
               {
                 type: "video",
-                src: "/innov2.mp4",
+                src: "/black.mp4",
                 alt: "innov1",
               },
             ]}
@@ -216,11 +216,25 @@ export default function Hero() {
           />
         </div>
 
-        {/* Clean Overlay for Better Contrast */}
+        {/* Static dark-to-light overlay: very dark at top, fades out toward bottom */}
+        <div
+          className="absolute inset-0 z-10"
+          style={{
+            background:
+              "linear-gradient(to bottom, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.60) 30%, rgba(0,0,0,0.35) 60%, rgba(0,0,0,0.10) 100%)",
+          }}
+        />
+
+        {/* Scroll-driven overlay: deepens slightly as user scrolls */}
         <div
           ref={overlayRef}
-          className="absolute inset-0 bg-gradient-to-r from-black/40 via-transparent to-black/20 z-5"
-          style={{ willChange: "opacity" }}
+          className="absolute inset-0 z-[6]"
+          style={{
+            background:
+              "linear-gradient(to bottom, rgba(0,0,0,0.5) 0%, rgba(0,0,0,0.2) 50%, transparent 100%)",
+            opacity: 0,
+            willChange: "opacity",
+          }}
         />
 
         {/* Mobile Layout - Clean and Simple */}
@@ -315,14 +329,14 @@ export default function Hero() {
                   style={{ willChange: "transform" }}
                 >
                   <button
-                    className="px-8 py-3 bg-amber-600 text-white font-medium text-sm hover:bg-amber-700 transition-all duration-300 active:scale-95"
+                    className="px-8 py-3 bg-amber-600 text-white font-medium text-sm hover:bg-amber-700 transition-all duration-300 active:scale-95 cursor-pointer"
                     style={{
                       fontWeight: "400",
                       letterSpacing: "0.08em",
                       minHeight: "48px",
                     }}
                   >
-                    SEE OUR PROJECTS
+                    <a href="/portfolio">SEE OUR PROJECTS</a>
                   </button>
                 </div>
 
@@ -341,7 +355,7 @@ export default function Hero() {
                       textShadow: "0 1px 2px rgba(0,0,0,0.6)",
                     }}
                   >
-                    No.5 Pius Wuchendu Street, NTA Road, Port Harcourt
+                    KM15 East-West Road, Port Harcourt, Rivers State, Nigeria
                   </p>
                 </div>
               </div>
@@ -386,7 +400,7 @@ export default function Hero() {
                       >
                         ARCHADEMY
                       </h1>
-                      <p className="text-base text-amber-700 font-light mt-4 tracking-widest">
+                      <p className="text-base text-amber-500 font-light mt-4 tracking-widest">
                         ARCHITECTURAL FIRM BASED IN NIGERIA
                       </p>
                     </div>
@@ -445,14 +459,15 @@ export default function Hero() {
                         style={{ willChange: "transform" }}
                       >
                         <button
-                          className="px-12 py-4 bg-amber-600 text-white font-medium text-base hover:bg-amber-700 transition-all duration-300 transform hover:scale-105"
-                          style={{
-                            fontWeight: "400",
-                            letterSpacing: "0.08em",
-                          }}
-                        >
-                          SEE OUR PROJECTS
-                        </button>
+                    className="px-12 py-4 bg-amber-600 text-white font-medium text-sm hover:bg-amber-700 transition-all duration-300 active:scale-95 cursor-pointer"
+                    style={{
+                      fontWeight: "400",
+                      letterSpacing: "0.08em",
+                      minHeight: "48px",
+                    }}
+                  >
+                    <a href="/portfolio">SEE OUR PROJECTS</a>
+                  </button>
                       </div>
 
                       {/* Address */}
@@ -469,7 +484,8 @@ export default function Hero() {
                             textShadow: "0 1px 2px rgba(0,0,0,0.6)",
                           }}
                         >
-                          No.5 Pius Wuchendu Street, NTA Road, Port Harcourt
+                          KM15 East-West Road, Port Harcourt, Rivers State,
+                          Nigeria
                         </p>
                       </div>
                     </div>

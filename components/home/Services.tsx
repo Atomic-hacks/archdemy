@@ -27,7 +27,7 @@ export default function Services() {
     {
       title: "Urban Planning",
       description:
-        "Urban design projects that promote sustainable communities. We focus on smart growth principles and functional networks for facilities and social relations.",
+        "Urban design projects that promote sustainable communities. We focus on smart growth principles and functional networks for facilities and social interactions & suitable/scalable mix-use developments",
       icon: Compass,
     },
     {
@@ -78,11 +78,10 @@ export default function Services() {
                 <h1
                   className="text-4xl md:text-5xl lg:text-6xl font-light text-stone-900 leading-[0.9] tracking-tight"
                   style={{
-                    letterSpacing: "-0.03em",
                     fontWeight: "300",
                   }}
                 >
-                  <span className="inline-block bg-gradient-to-r from-amber-600 via-amber-700 to-amber-600 bg-clip-text text-transparent">
+                  <span className=" bg-gradient-to-r from-amber-600 via-amber-700 to-amber-600 bg-clip-text text-transparent">
                     Designing
                   </span>
                   <br />

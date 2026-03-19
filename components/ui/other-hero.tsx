@@ -206,13 +206,13 @@ const ArchitectureHero: React.FC<HeroProps> = ({
       accentRef.current.style.opacity = accentOpacity.toString();
     }
 
-    // Original overlay effect
+    // Scroll-driven overlay — deepens on scroll
     if (overlayRef.current) {
-      const overlayOpacity = Math.min(scrollProgress * 0.2, 0.15);
-      overlayRef.current.style.opacity = overlayOpacity.toString();
+      const scrollOverlayOpacity = Math.min(scrollProgress * 0.2, 0.15);
+      overlayRef.current.style.opacity = scrollOverlayOpacity.toString();
     }
 
-    // Readability overlay - slightly increases opacity on scroll for better text contrast
+    // Readability overlay — slightly deepens on scroll
     if (readabilityOverlayRef.current && overlayType !== "none") {
       const baseOpacity = overlayOpacity * 0.7;
       const scrollOpacity = Math.min(scrollProgress * 0.3, 0.2);
@@ -274,7 +274,7 @@ const ArchitectureHero: React.FC<HeroProps> = ({
         perspective: "1000px",
       }}
     >
-      {/* Background image with subtle overlay */}
+      {/* Background image */}
       {backgroundImage && (
         <div
           ref={backgroundRef}
@@ -293,11 +293,20 @@ const ArchitectureHero: React.FC<HeroProps> = ({
         </div>
       )}
 
-      {/* Readability Overlay - New configurable overlay */}
+      {/* Static dark-to-light overlay: very dark at top, fades out toward bottom */}
+      <div
+        className="absolute inset-0 z-[5] pointer-events-none"
+        style={{
+          background:
+            "linear-gradient(to bottom, rgba(0,0,0,0.80) 0%, rgba(0,0,0,0.55) 30%, rgba(0,0,0,0.30) 60%, rgba(0,0,0,0.08) 100%)",
+        }}
+      />
+
+      {/* Configurable readability overlay (type-based) — scroll-reactive */}
       {overlayType !== "none" && (
         <div
           ref={readabilityOverlayRef}
-          className="absolute inset-0 z-5"
+          className="absolute inset-0 z-[6] pointer-events-none"
           style={{
             ...getOverlayStyles(),
             willChange: "opacity",
@@ -306,11 +315,16 @@ const ArchitectureHero: React.FC<HeroProps> = ({
         />
       )}
 
-      {/* Original subtle overlay for better contrast */}
+      {/* Scroll-driven overlay: starts invisible, deepens slightly on scroll */}
       <div
         ref={overlayRef}
-        className="absolute inset-0 bg-gradient-to-br from-black/10 via-transparent to-amber-900/5 z-6"
-        style={{ willChange: "opacity" }}
+        className="absolute inset-0 z-[7] pointer-events-none"
+        style={{
+          background:
+            "linear-gradient(to bottom, rgba(0,0,0,0.4) 0%, rgba(0,0,0,0.15) 50%, transparent 100%)",
+          opacity: 0,
+          willChange: "opacity",
+        }}
       />
 
       {/* Mobile Layout */}
@@ -341,11 +355,11 @@ const ArchitectureHero: React.FC<HeroProps> = ({
               style={{ willChange: "transform, opacity" }}
             >
               <h1
-                className="text-lg font-light text-amber-900 tracking-widest mb-4 drop-shadow-sm"
+                className="text-lg font-light text-amber-500 tracking-widest mb-4 drop-shadow-sm"
                 style={{
                   fontWeight: "300",
                   letterSpacing: "0.15em",
-                  textShadow: "0 1px 2px rgba(0,0,0,0.1)",
+                  textShadow: "0 1px 3px rgba(0,0,0,0.6)",
                 }}
               >
                 {descriptionHeader}
@@ -360,12 +374,12 @@ const ArchitectureHero: React.FC<HeroProps> = ({
             >
               <p
                 id={descriptionId}
-                className={`text-base text-neutral-300 leading-relaxed font-light ${contentAlignClass[contentAlignment]} ${descriptionClassName} drop-shadow-sm`}
+                className={`text-base text-gray-100 leading-relaxed font-light ${contentAlignClass[contentAlignment]} ${descriptionClassName} drop-shadow-sm`}
                 style={{
                   fontWeight: "300",
                   letterSpacing: "0.01em",
                   lineHeight: "1.6",
-                  textShadow: "0 1px 2px rgba(0,0,0,0.1)",
+                  textShadow: "0 1px 3px rgba(0,0,0,0.6)",
                 }}
               >
                 {description}
@@ -379,8 +393,8 @@ const ArchitectureHero: React.FC<HeroProps> = ({
                 className="flex justify-center"
                 style={{ willChange: "transform" }}
               >
-                <div className="p-4 border border-amber-600/30 rounded-full backdrop-blur-sm drop-shadow-md">
-                  <LeftIcon className="w-6 h-6 text-amber-800" />
+                <div className="p-4 border border-amber-500/50 rounded-full backdrop-blur-sm drop-shadow-md">
+                  <LeftIcon className="w-6 h-6 text-amber-500" />
                 </div>
               </div>
             )}
@@ -401,7 +415,7 @@ const ArchitectureHero: React.FC<HeroProps> = ({
                   className="mb-8"
                   style={{ willChange: "transform, opacity" }}
                 >
-                  <div className="w-24 h-px bg-gradient-to-r from-amber-600 to-amber-700 drop-shadow-sm"></div>
+                  <div className="w-24 h-px bg-gradient-to-r from-amber-500 to-amber-600 drop-shadow-sm"></div>
                 </div>
 
                 {/* Content Container */}
@@ -420,11 +434,11 @@ const ArchitectureHero: React.FC<HeroProps> = ({
                     style={{ willChange: "transform, opacity" }}
                   >
                     <h1
-                      className="text-2xl lg:text-3xl font-light text-amber-900 tracking-widest mb-6 drop-shadow-sm"
+                      className="text-2xl lg:text-3xl font-light text-amber-500 tracking-widest mb-6 drop-shadow-sm"
                       style={{
                         fontWeight: "300",
                         letterSpacing: "0.12em",
-                        textShadow: "0 1px 3px rgba(0,0,0,0.1)",
+                        textShadow: "0 2px 4px rgba(0,0,0,0.7)",
                       }}
                     >
                       {descriptionHeader}
@@ -439,12 +453,12 @@ const ArchitectureHero: React.FC<HeroProps> = ({
                   >
                     <p
                       id={descriptionId}
-                      className={`text-lg lg:text-xl text-neutral-200 leading-relaxed font-light ${contentAlignClass[contentAlignment]} ${descriptionClassName} drop-shadow-sm`}
+                      className={`text-lg lg:text-xl text-gray-100 leading-relaxed font-light ${contentAlignClass[contentAlignment]} ${descriptionClassName} drop-shadow-sm`}
                       style={{
                         fontWeight: "300",
                         letterSpacing: "0.01em",
                         lineHeight: "1.7",
-                        textShadow: "0 1px 3px rgba(0,0,0,0.1)",
+                        textShadow: "0 1px 4px rgba(0,0,0,0.7)",
                       }}
                     >
                       {description}
@@ -457,8 +471,8 @@ const ArchitectureHero: React.FC<HeroProps> = ({
               <div className="col-span-5 lg:col-span-4 flex justify-center lg:justify-end">
                 {imagePosition === "right" && (
                   <div ref={iconRef} style={{ willChange: "transform" }}>
-                    <div className="p-8 border border-amber-600/30 rounded-full backdrop-blur-sm hover:bg-amber-100/90 transition-all duration-500 drop-shadow-lg">
-                      <LeftIcon className="w-12 h-12 lg:w-16 lg:h-16 text-amber-800" />
+                    <div className="p-8 border border-amber-500/40 rounded-full backdrop-blur-sm hover:bg-white/10 transition-all duration-500 drop-shadow-lg">
+                      <LeftIcon className="w-12 h-12 lg:w-16 lg:h-16 text-amber-300" />
                     </div>
                   </div>
                 )}
@@ -469,15 +483,15 @@ const ArchitectureHero: React.FC<HeroProps> = ({
       </div>
 
       {/* Background Title - Subtle Typography */}
-      <div className="absolute inset-0 z-5 pointer-events-none overflow-hidden flex items-center justify-center">
+      <div className="absolute inset-0 z-[5] pointer-events-none overflow-hidden flex items-center justify-center">
         <h1
           ref={titleRef}
           id={titleId}
-          className={`text-amber-900/10 font-extralight tracking-widest select-none ${titleClassName}`}
+          className={`text-amber-500/20 uppercase font-extralight tracking-wide select-none ${titleClassName}`}
           style={{
             fontSize: "clamp(4rem, 15vw, 20rem)",
-            fontWeight: "100",
-            letterSpacing: "0.2em",
+            fontWeight: "90",
+            letterSpacing: "0.1em",
             lineHeight: "0.9",
             willChange: "transform, opacity",
             transformStyle: "preserve-3d",
@@ -489,7 +503,7 @@ const ArchitectureHero: React.FC<HeroProps> = ({
 
       {/* Subtle grid pattern overlay */}
       <div
-        className="absolute inset-0 z-0 opacity-3"
+        className="absolute inset-0 z-0 opacity-3 pointer-events-none"
         style={{
           backgroundImage: `
             linear-gradient(rgba(120, 53, 15, 0.04) 1px, transparent 1px),

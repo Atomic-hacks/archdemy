@@ -49,8 +49,12 @@ export default function Navbar() {
           <div className="flex items-center justify-between h-16 lg:h-20">
             {/* Logo */}
             <div className="flex-shrink-0">
-              <Link href="/" className="group flex items-center space-x-3">
-                <img src="/logo.png" alt="logo" className="w-20 h-12" />
+              <Link href="/" className="group flex items-center space-x-3 ">
+                <img
+                  src="/logo.png"
+                  alt="logo"
+                  className="w-28 h-16 rounded-full"
+                />
                 <div className="flex flex-col">
                   <span
                     className={`text-lg lg:text-xl font-light tracking-tight transition-colors duration-500 ${
@@ -71,7 +75,7 @@ export default function Navbar() {
                       letterSpacing: "0.1em",
                     }}
                   >
-                    LIMITED
+                    DESIGN COMPANY LIMITED
                   </span>
                 </div>
               </Link>

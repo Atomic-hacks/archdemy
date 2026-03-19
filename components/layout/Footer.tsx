@@ -14,7 +14,7 @@ export default function Footer() {
           setIsFooterVisible(true);
         }
       },
-      { threshold: 0.2 }
+      { threshold: 0.2 },
     );
 
     if (footerRef.current) footerObserver.observe(footerRef.current);
@@ -184,7 +184,7 @@ export default function Footer() {
                     letterSpacing: "0.02em",
                   }}
                 >
-                  No.5 Pius Wuchendu Street, NTA Road, Port Harcourt
+                  KM15 East-West Road, Port Harcourt, Rivers State, Nigeria
                 </p>
               </div>
 
