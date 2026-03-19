@@ -53,7 +53,7 @@ export default function Navbar() {
                 <img
                   src="/logo.png"
                   alt="logo"
-                  className="w-28 h-16 rounded-full"
+                  className="md:w-28 w-20 h-12 md:h-16 rounded-full"
                 />
                 <div className="flex flex-col">
                   <span
@@ -68,7 +68,7 @@ export default function Navbar() {
                     Archademy
                   </span>
                   <span
-                    className={`text-xs font-light tracking-wider transition-colors duration-500 ${
+                    className={`text-[0.625rem] md:text-xs font-light tracking-wider transition-colors duration-500 ${
                       isScrolled ? "text-amber-600" : "text-white/80"
                     }`}
                     style={{

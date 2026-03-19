@@ -28,14 +28,14 @@ const OurStory: React.FC<OurStoryProps> = ({ containerClassName = "" }) => {
   // Auto-cycling active section
   useEffect(() => {
     const interval = setInterval(() => {
-      setActiveSection((prev) => (prev + 1) % 3);
+      setActiveSection((prev: number) => (prev + 1) % 3);
     }, 4000);
 
     return () => clearInterval(interval);
   }, []);
 
   const stats = [
-    { number: "50", label: "Projects Completed", icon: Briefcase },
+    { number: "50+", label: "Projects Completed", icon: Briefcase },
     { number: "15+", label: "Clients", icon: Users },
     { number: "1", label: "Years In Service", icon: Clock },
   ];

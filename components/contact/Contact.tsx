@@ -146,7 +146,7 @@ const ContactPage = () => {
                           Our Email
                         </h3>
                         <p className="text-base text-neutral-600 font-light">
-                          info@Archademylimited.ng
+                          info@Archademylimited.com
                         </p>
                       </div>
                     </div>
