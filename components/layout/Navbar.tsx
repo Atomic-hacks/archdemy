@@ -35,7 +35,7 @@ export default function Navbar() {
           </div>
           <TransitionLink
             href="/"
-            className="absolute left-1/2 -translate-x-1/2 flex items-center gap-2 md:gap-3"
+            className="absolute md:left-1/2 md:-translate-x-1/2 flex items-center gap-2 md:gap-3"
           >
             <img src="/logo.png" alt="logo" className="h-10 w-auto md:h-16" />
             <div className="flex flex-col leading-tight">
