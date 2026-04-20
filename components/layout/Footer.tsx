@@ -1,239 +1,100 @@
-"use client";
-
-import { useEffect, useRef, useState } from "react";
-import { MapPin, Mail, Linkedin, Facebook, Instagram } from "lucide-react";
+import TransitionLink from "@/components/ui/TransitionLink";
 
 export default function Footer() {
-  const footerRef = useRef<HTMLDivElement>(null);
-  const [isFooterVisible, setIsFooterVisible] = useState(false);
-
-  useEffect(() => {
-    const footerObserver = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setIsFooterVisible(true);
-        }
-      },
-      { threshold: 0.2 },
-    );
-
-    if (footerRef.current) footerObserver.observe(footerRef.current);
-
-    return () => {
-      footerObserver.disconnect();
-    };
-  }, []);
-
   return (
-    <footer className="bg-white border-t border-stone-200/50">
-      <div className="max-w-6xl mx-auto px-8 md:px-16 lg:px-24">
-        {/* Header */}
-        <div
-          ref={footerRef}
-          className={`text-center py-16 md:py-20 transform transition-all duration-1000 ease-out ${
-            isFooterVisible
-              ? "translate-y-0 opacity-100"
-              : "translate-y-8 opacity-0"
-          }`}
-        >
-          <div className="flex items-center justify-center space-x-3 mb-4">
-            <img
-              src="/logo.png"
-              alt="Archademy"
-              className="w-20 h-12 rounded-full"
-            />
-            <div className="flex flex-col">
-              <span
-                className="text-xl font-light tracking-tight text-stone-900"
-                style={{
-                  fontWeight: "300",
-                  letterSpacing: "-0.01em",
-                }}
-              >
+    <footer className="bg-black text-white">
+      <div className="mx-auto grid max-w-[1296px] gap-14 px-6 py-20 md:px-10 lg:grid-cols-[1.25fr_0.95fr_0.7fr_0.7fr_0.7fr]">
+        <div className="space-y-16">
+          <TransitionLink href="/" className="inline-flex items-center gap-3">
+            <img src="/logo.png" alt="logo" className="h-16 w-auto" />
+            <div className="flex flex-col leading-tight">
+              <span className="text-[1.35rem] font-semibold tracking-[0.28em] uppercase text-amber-700">
                 Archademy
               </span>
-              <span
-                className="text-xs font-light tracking-wider text-amber-600"
-                style={{
-                  letterSpacing: "0.1em",
-                }}
-              >
-                LIMITED
+              <span className="text-[0.6rem] tracking-[0.22em] text-white/50 uppercase">
+                Design Company Limited
               </span>
             </div>
+          </TransitionLink>
+          <div className="space-y-2 text-[1rem] leading-8 text-white/68">
+            <p>© 2026 Archademy.</p>
+            <p>Work by Archademy. Crafted with precision.</p>
           </div>
+        </div>
 
-          <p
-            className="text-stone-600 font-light text-sm"
-            style={{
-              fontWeight: "300",
-              letterSpacing: "0.02em",
-            }}
-          >
-            more than design
+        <div className="space-y-10 text-[1rem]">
+          <div>
+            <p className="mb-3 text-[0.82rem] uppercase tracking-[0.08em] text-white/50">
+              Address
+            </p>
+            <p className="max-w-[240px] leading-8 text-white/82">
+              KM15 East-West Road, Port Harcourt, Rivers State, Nigeria
+            </p>
+          </div>
+          <div>
+            <p className="mb-3 text-[0.82rem] uppercase tracking-[0.08em] text-white/50">
+              Email
+            </p>
+            <a
+              href="mailto:info@archademyltd.com"
+              className="leading-8 text-white/82 transition-colors hover:text-[var(--burnt-orange)]"
+            >
+              info@archademyltd.com
+            </a>
+          </div>
+          <div>
+            <p className="mb-3 text-[0.82rem] uppercase tracking-[0.08em] text-white/50">
+              Contact Us
+            </p>
+            <a
+              href="tel:+2340000000000"
+              className="leading-8 text-white/82 transition-colors hover:text-[var(--burnt-orange)]"
+            >
+              +234 000 000 0000
+            </a>
+          </div>
+        </div>
+
+        <div>
+          <p className="mb-5 text-[0.82rem] uppercase tracking-[0.08em] text-white/50">
+            Menu
           </p>
-        </div>
-
-        {/* Main Content Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-12 lg:gap-16 pb-16 md:pb-20">
-          {/* Our Company */}
-          <div
-            className={`transform transition-all duration-1000 ${
-              isFooterVisible
-                ? "translate-y-0 opacity-100"
-                : "translate-y-8 opacity-0"
-            }`}
-            style={{ transitionDelay: "200ms" }}
-          >
-            <h3
-              className="text-stone-900 font-light text-lg mb-6"
-              style={{
-                fontWeight: "300",
-                letterSpacing: "-0.01em",
-              }}
+          <div className="space-y-3 text-[1rem]">
+            <TransitionLink
+              href="/work"
+              className="block text-white/82 transition-colors hover:text-[var(--burnt-orange)]"
             >
-              Our Company
-            </h3>
-
-            <div className="space-y-3">
-              {[
-                { name: "About Us", href: "/about" },
-                { name: "Portfolio", href: "/portfolio" },
-                { name: "Testimonials", href: "/testimonials" },
-                { name: "Contact", href: "/contact" },
-              ].map((item) => (
-                <a
-                  key={item.name}
-                  href={item.href}
-                  className="block text-stone-600 hover:text-amber-600 transition-colors duration-300 font-light text-sm"
-                  style={{
-                    fontWeight: "300",
-                    letterSpacing: "0.02em",
-                  }}
-                >
-                  {item.name}
-                </a>
-              ))}
-            </div>
-          </div>
-
-          {/* Get In Touch */}
-          <div
-            className={`transform transition-all duration-1000 ${
-              isFooterVisible
-                ? "translate-y-0 opacity-100"
-                : "translate-y-8 opacity-0"
-            }`}
-            style={{ transitionDelay: "400ms" }}
-          >
-            <h3
-              className="text-stone-900 font-light text-lg mb-6"
-              style={{
-                fontWeight: "300",
-                letterSpacing: "-0.01em",
-              }}
+              Works
+            </TransitionLink>
+            <TransitionLink
+              href="/contact"
+              className="block text-white/82 transition-colors hover:text-[var(--burnt-orange)]"
             >
-              Get In Touch
-            </h3>
-
-            <div className="flex space-x-4">
-              {[
-                { icon: Linkedin, name: "LinkedIn", href: "#" },
-                { icon: Facebook, name: "Facebook", href: "#" },
-                { icon: Instagram, name: "Instagram", href: "#" },
-                { icon: Mail, name: "Pinterest", href: "#" }, // Using Mail icon as placeholder for Pinterest
-              ].map((social) => (
-                <a
-                  key={social.name}
-                  href={social.href}
-                  className="text-stone-600 hover:text-amber-600 transition-colors duration-300"
-                  aria-label={social.name}
-                >
-                  <social.icon className="w-5 h-5" />
-                </a>
-              ))}
-            </div>
-          </div>
-
-          {/* Contact Info */}
-          <div
-            className={`transform transition-all duration-1000 ${
-              isFooterVisible
-                ? "translate-y-0 opacity-100"
-                : "translate-y-8 opacity-0"
-            }`}
-            style={{ transitionDelay: "600ms" }}
-          >
-            <h3
-              className="text-stone-900 font-light text-lg mb-6"
-              style={{
-                fontWeight: "300",
-                letterSpacing: "-0.01em",
-              }}
-            >
-              Contact Info
-            </h3>
-
-            <div className="space-y-4">
-              <div className="flex items-start space-x-3">
-                <MapPin className="w-4 h-4 text-stone-400 mt-0.5 flex-shrink-0" />
-                <p
-                  className="text-stone-600 font-light text-sm leading-relaxed"
-                  style={{
-                    fontWeight: "300",
-                    letterSpacing: "0.02em",
-                  }}
-                >
-                  KM15 East-West Road, Port Harcourt, Rivers State, Nigeria
-                </p>
-              </div>
-
-              <div className="flex items-center space-x-3">
-                <Mail className="w-4 h-4 text-stone-400 flex-shrink-0" />
-                <a
-                  href="mailto:info@archademyltd.com"
-                  className="text-stone-600 hover:text-amber-600 transition-colors duration-300 font-light text-sm"
-                  style={{
-                    fontWeight: "300",
-                    letterSpacing: "0.02em",
-                  }}
-                >
-                  info@archademyltd.com
-                </a>
-              </div>
-            </div>
+              Contact
+            </TransitionLink>
           </div>
         </div>
 
-        {/* Bottom Section */}
-        <div className="border-t border-stone-200/50 py-8">
-          <div
-            className={`flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0 transform transition-all duration-1000 ${
-              isFooterVisible
-                ? "translate-y-0 opacity-100"
-                : "translate-y-4 opacity-0"
-            }`}
-            style={{ transitionDelay: "800ms" }}
-          >
-            <p
-              className="text-stone-500 font-light text-sm"
-              style={{
-                fontWeight: "300",
-                letterSpacing: "0.02em",
-              }}
-            >
-              Copyright © 2025 Archademy
-            </p>
+        <div>
+          <p className="mb-5 text-[0.82rem] uppercase tracking-[0.08em] text-white/50">
+            Support
+          </p>
+          <div className="space-y-3 text-[1rem] text-white/82">
+            <p>Terms & Conditions</p>
+            <p>Privacy Policy</p>
+            <p>Studio Notes</p>
+          </div>
+        </div>
 
-            <p
-              className="text-stone-500 font-light text-sm"
-              style={{
-                fontWeight: "300",
-                letterSpacing: "0.02em",
-              }}
-            >
-              Powered by Archademy
-            </p>
+        <div>
+          <p className="mb-5 text-[0.82rem] uppercase tracking-[0.08em] text-white/50">
+            Social
+          </p>
+          <div className="space-y-3 text-[1rem] text-white/82">
+            <p>@instagram</p>
+            <p>#facebook</p>
+            <p>#linkedin</p>
+            <p>@x</p>
           </div>
         </div>
       </div>

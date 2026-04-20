@@ -1,183 +1,106 @@
 "use client";
-import Link from "next/link";
+
 import { useEffect, useState } from "react";
+import TransitionLink from "@/components/ui/TransitionLink";
+
+const links = [
+  { name: "Work", href: "/work" },
+  { name: "Contact", href: "/contact" },
+];
 
 export default function Navbar() {
-  const [isScrolled, setIsScrolled] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 50);
-    };
-
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    handleScroll();
-
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
-
-  useEffect(() => {
-    if (isMenuOpen) {
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "unset";
-    }
-
+    document.body.style.overflow = isMenuOpen ? "hidden" : "";
     return () => {
-      document.body.style.overflow = "unset";
+      document.body.style.overflow = "";
     };
   }, [isMenuOpen]);
 
-  const menuItems = [
-    { name: "Home", href: "/" },
-    { name: "About", href: "/about" },
-    { name: "Portfolio", href: "/portfolio" },
-    { name: "Contact", href: "/contact" },
-  ];
-
   return (
     <>
-      <nav
-        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ease-out ${
-          isScrolled
-            ? "bg-white/95 backdrop-blur-sm shadow-sm border-b border-stone-200/50"
-            : "bg-transparent"
-        }`}
-      >
-        <div className="max-w-6xl mx-auto px-8 md:px-16 lg:px-24">
-          <div className="flex items-center justify-between h-16 lg:h-20">
-            {/* Logo */}
-            <div className="flex-shrink-0">
-              <Link href="/" className="group flex items-center space-x-3 ">
-                <img
-                  src="/logo.png"
-                  alt="logo"
-                  className="md:w-28 w-20 h-12 md:h-16 rounded-full"
-                />
-                <div className="flex flex-col">
-                  <span
-                    className={`text-lg lg:text-xl font-light tracking-tight transition-colors duration-500 ${
-                      isScrolled ? "text-stone-900" : "text-white"
-                    }`}
-                    style={{
-                      fontWeight: "300",
-                      letterSpacing: "-0.01em",
-                    }}
-                  >
-                    Archademy
-                  </span>
-                  <span
-                    className={`text-[0.625rem] md:text-xs font-light tracking-wider transition-colors duration-500 ${
-                      isScrolled ? "text-amber-600" : "text-white/80"
-                    }`}
-                    style={{
-                      letterSpacing: "0.1em",
-                    }}
-                  >
-                    DESIGN COMPANY LIMITED
-                  </span>
-                </div>
-              </Link>
+      <nav className="fixed inset-x-0 top-0 z-50 border-b border-black/10 bg-white/96 backdrop-blur-xl">
+        <div className="mx-auto flex h-[5.75rem] max-w-[1296px] items-center justify-between px-6 md:px-10">
+          <div className="hidden items-center gap-10 md:flex">
+            {links.map((link) => (
+              <TransitionLink
+                key={link.name}
+                href={link.href}
+                className="text-[0.88rem] uppercase tracking-[0.06em] text-black transition-colors hover:text-[var(--burnt-orange)]"
+              >
+                {link.name}
+              </TransitionLink>
+            ))}
+          </div>
+          <TransitionLink
+            href="/"
+            className="absolute left-1/2 -translate-x-1/2 flex items-center gap-3"
+          >
+            <img src="/logo.png" alt="logo" className="h-16 w-auto" />
+            <div className="flex flex-col leading-tight">
+              <span className="text-[1.35rem] font-semibold tracking-[0.28em] text-amber-700 uppercase">
+                Archademy
+              </span>
+              <span className="text-[0.6rem] tracking-[0.22em] text-black/50 uppercase">
+                Design Company Limited
+              </span>
             </div>
+          </TransitionLink>
 
-            {/* Desktop Menu */}
-            <div className="hidden lg:flex items-center space-x-12">
-              {menuItems.map((item) => (
-                <a
-                  key={item.name}
-                  href={item.href}
-                  className={`relative group text-sm font-light tracking-wide transition-colors duration-500 ${
-                    isScrolled
-                      ? "text-stone-700 hover:text-amber-600"
-                      : "text-white/90 hover:text-white"
-                  }`}
-                  style={{
-                    fontWeight: "300",
-                    letterSpacing: "0.05em",
-                  }}
-                >
-                  {item.name}
-                  <div className="absolute -bottom-1 left-0 w-0 h-px bg-amber-600 group-hover:w-full transition-all duration-300"></div>
-                </a>
-              ))}
-            </div>
-
-            {/* Mobile Menu Button */}
-            <button
-              onClick={() => setIsMenuOpen(!isMenuOpen)}
-              className={`lg:hidden relative p-2 transition-all duration-300 ${
-                isScrolled ? "text-stone-700" : "text-white"
-              }`}
+          <div className="ml-auto flex items-center gap-6">
+            <TransitionLink
+              href="/contact"
+              className="hidden text-[0.88rem] uppercase tracking-[0.06em] text-black transition-colors hover:text-[var(--burnt-orange)] md:inline-flex"
             >
-              <div className="flex flex-col space-y-1 w-5">
-                <div
-                  className={`h-0.5 w-full rounded-full transition-all duration-300 ${
-                    isMenuOpen
-                      ? "rotate-45 translate-y-1.5"
-                      : "rotate-0 translate-y-0"
-                  } ${isScrolled ? "bg-stone-700" : "bg-white"}`}
-                ></div>
-                <div
-                  className={`h-0.5 w-full rounded-full transition-all duration-300 ${
+              Contact Us
+            </TransitionLink>
+
+            <button
+              type="button"
+              aria-label="Toggle menu"
+              onClick={() => setIsMenuOpen((open) => !open)}
+              className="grid h-9 w-9 place-items-center text-black"
+            >
+              <div className="space-y-1">
+                <span
+                  className={`block h-0.5 w-5 bg-current transition-transform duration-300 ${
+                    isMenuOpen ? "translate-y-1.5 rotate-45" : ""
+                  }`}
+                />
+                <span
+                  className={`block h-0.5 w-5 bg-current transition-opacity duration-300 ${
                     isMenuOpen ? "opacity-0" : "opacity-100"
-                  } ${isScrolled ? "bg-stone-700" : "bg-white"}`}
-                ></div>
-                <div
-                  className={`h-0.5 w-full rounded-full transition-all duration-300 ${
-                    isMenuOpen
-                      ? "-rotate-45 -translate-y-1.5"
-                      : "rotate-0 translate-y-0"
-                  } ${isScrolled ? "bg-stone-700" : "bg-white"}`}
-                ></div>
+                  }`}
+                />
+                <span
+                  className={`block h-0.5 w-5 bg-current transition-transform duration-300 ${
+                    isMenuOpen ? "-translate-y-1.5 -rotate-45" : ""
+                  }`}
+                />
               </div>
             </button>
           </div>
         </div>
       </nav>
 
-      {/* Mobile Menu Overlay */}
       <div
-        className={`lg:hidden fixed inset-0 z-40 transition-all duration-500 ease-out ${
-          isMenuOpen ? "opacity-100 visible" : "opacity-0 invisible"
+        className={`fixed inset-0 z-40 bg-black transition-opacity duration-300 ${
+          isMenuOpen ? "visible opacity-100" : "invisible opacity-0"
         }`}
       >
-        {/* Clean background */}
-        <div className="absolute inset-0 bg-stone-900/95 backdrop-blur-sm"></div>
-
-        {/* Menu Content */}
-        <div className="relative z-10 h-full">
-          <div className="flex flex-col justify-center min-h-full px-8 py-20">
-            {/* Menu Items */}
-            <div className="space-y-8">
-              {menuItems.map((item, index) => (
-                <div
-                  key={item.name}
-                  className={`transition-all duration-500 ease-out ${
-                    isMenuOpen
-                      ? "opacity-100 translate-x-0"
-                      : "opacity-0 -translate-x-8"
-                  }`}
-                  style={{ transitionDelay: `${index * 100 + 200}ms` }}
-                >
-                  <a
-                    href={item.href}
-                    onClick={() => setIsMenuOpen(false)}
-                    className="group block py-2 border-b border-stone-700/30 hover:border-amber-600/50 transition-all duration-300"
-                  >
-                    <span
-                      className="text-2xl font-light text-white group-hover:text-amber-300 transition-colors duration-300"
-                      style={{
-                        fontWeight: "300",
-                        letterSpacing: "-0.01em",
-                      }}
-                    >
-                      {item.name}
-                    </span>
-                  </a>
-                </div>
-              ))}
-            </div>
+        <div className="mx-auto flex h-full max-w-[1296px] flex-col justify-center px-6 md:px-10">
+          <div className="space-y-6">
+            {links.map((link) => (
+              <TransitionLink
+                key={link.name}
+                href={link.href}
+                onClick={() => setIsMenuOpen(false)}
+                className="block border-b border-white/20 pb-4 text-5xl tracking-[-0.04em] text-white"
+              >
+                {link.name}
+              </TransitionLink>
+            ))}
           </div>
         </div>
       </div>
