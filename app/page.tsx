@@ -165,18 +165,18 @@ export default function HomePage() {
     <main className="bg-white text-black">
       <ParallaxHero videoSrc="/hero-video.mp4">
         <div className="max-w-[720px]">
-          <p className="mb-6 text-[0.72rem] uppercase tracking-[0.16em] text-white/80">
+          <p className="mb-4 text-[0.65rem] uppercase tracking-[0.16em] text-white/80 md:mb-6 md:text-[0.72rem]">
             #World&apos;s Number One
           </p>
-          <h1 className="max-w-[820px] text-5xl font-medium leading-[0.98] tracking-[-0.04em] text-white md:text-7xl">
+          <h1 className="max-w-[820px] text-[2.5rem] font-medium leading-[0.98] tracking-[-0.04em] text-white sm:text-4xl md:text-7xl">
             Crafting <span className="text-amber-700">Unique</span> Spaces with
             Innovative <span className="text-amber-700">Architectural</span>{" "}
             Solutions
           </h1>
         </div>
 
-        <div className="mt-14 flex flex-col items-start justify-between gap-6 border-t border-white/20 pt-6 md:flex-row md:items-end">
-          <div className="max-w-xs border-l border-[var(--burnt-orange)] pl-4 text-sm leading-7 text-white/82">
+        <div className="mt-10 flex flex-col items-start justify-between gap-4 border-t border-white/20 pt-4 md:mt-14 md:gap-6 md:pt-6 md:flex-row md:items-end">
+          <div className="max-w-xs border-l border-[var(--burnt-orange)] pl-4 text-xs leading-6 text-white/82 md:text-sm md:leading-7">
             The power of architecture to transform lives and communities.
           </div>
           <AnimatedPillButton href="/work" label="Our Projects" light />
@@ -189,10 +189,10 @@ export default function HomePage() {
 
           <div className="grid gap-12 lg:grid-cols-[1.2fr_1fr_1fr]">
             <RevealContent className="flex flex-col justify-center">
-              <h2 className="text-4xl font-medium leading-[1.05] tracking-[-0.04em] md:text-5xl">
+              <h2 className="text-2xl font-medium leading-[1.05] tracking-[-0.04em] sm:text-3xl md:text-4xl lg:text-5xl">
                 Discover Our Journey to Architectural Excellence
               </h2>
-              <div className="mt-8 space-y-6 text-[1rem] leading-8 text-neutral-600">
+              <div className="mt-6 space-y-4 text-sm leading-6 text-neutral-600 md:mt-8 md:space-y-6 md:text-[1rem] md:leading-8">
                 <p>
                   Archademy has evolved into a design practice known for clear
                   thinking, refined form-making, and architecture rooted in real

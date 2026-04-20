@@ -10,43 +10,43 @@ export default function ContactPage() {
 
         <div className="grid gap-12 lg:grid-cols-[1fr_0.92fr]">
           <div>
-            <h1 className="max-w-[34rem] text-[4.4rem] font-medium leading-[0.96] tracking-[-0.06em]">
+            <h1 className="max-w-[34rem] text-2xl font-medium leading-[0.96] tracking-[-0.06em] sm:text-3xl md:text-[4.4rem]">
               Let&apos;s Discuss Your Next Project
             </h1>
-            <p className="mt-8 max-w-[40rem] text-[1.08rem] leading-10 text-black/62">
+            <p className="mt-6 max-w-[40rem] text-sm leading-6 text-black/62 md:mt-8 md:text-[1.08rem] md:leading-10">
               Whether you&apos;re beginning with a sketch, a site, or a clear
               business objective, we&apos;re ready to help shape the next step
               with precision and care.
             </p>
 
-            <div className="mt-14 grid gap-10 md:grid-cols-2">
+            <div className="mt-10 grid gap-8 md:mt-14 md:gap-10 md:grid-cols-2">
               <div>
-                <p className="text-[0.82rem] uppercase tracking-[0.05em] text-black/42">
+                <p className="text-[0.75rem] uppercase tracking-[0.05em] text-black/42 md:text-[0.82rem]">
                   Email
                 </p>
                 <a
                   href="mailto:info@archademyltd.com"
-                  className="mt-2 block text-[1.4rem] font-medium tracking-[-0.03em] text-black"
+                  className="mt-2 block text-sm font-medium tracking-[-0.03em] text-black md:text-[1.4rem]"
                 >
                   info@archademyltd.com
                 </a>
               </div>
               <div>
-                <p className="text-[0.82rem] uppercase tracking-[0.05em] text-black/42">
+                <p className="text-[0.75rem] uppercase tracking-[0.05em] text-black/42 md:text-[0.82rem]">
                   Phone
                 </p>
                 <a
                   href="tel:+2340000000000"
-                  className="mt-2 block text-[1.4rem] font-medium tracking-[-0.03em] text-black"
+                  className="mt-2 block text-sm font-medium tracking-[-0.03em] text-black md:text-[1.4rem]"
                 >
                   +234 000 000 0000
                 </a>
               </div>
               <div>
-                <p className="text-[0.82rem] uppercase tracking-[0.05em] text-black/42">
+                <p className="text-[0.75rem] uppercase tracking-[0.05em] text-black/42 md:text-[0.82rem]">
                   Address
                 </p>
-                <p className="mt-2 max-w-[18rem] text-[1.1rem] leading-8 text-black/68">
+                <p className="mt-2 max-w-[18rem] text-sm leading-6 text-black/68 md:text-[1.1rem] md:leading-8">
                   KM15 East-West Road, Port Harcourt, Rivers State, Nigeria
                 </p>
               </div>

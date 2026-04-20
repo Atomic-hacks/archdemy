@@ -35,14 +35,14 @@ export default function Navbar() {
           </div>
           <TransitionLink
             href="/"
-            className="absolute left-1/2 -translate-x-1/2 flex items-center gap-3"
+            className="absolute left-1/2 -translate-x-1/2 flex items-center gap-2 md:gap-3"
           >
-            <img src="/logo.png" alt="logo" className="h-16 w-auto" />
+            <img src="/logo.png" alt="logo" className="h-10 w-auto md:h-16" />
             <div className="flex flex-col leading-tight">
-              <span className="text-[1.35rem] font-semibold tracking-[0.28em] text-amber-700 uppercase">
+              <span className="text-[0.85rem] font-semibold tracking-[0.28em] text-amber-700 uppercase md:text-[1.35rem]">
                 Archademy
               </span>
-              <span className="text-[0.6rem] tracking-[0.22em] text-black/50 uppercase">
+              <span className="text-[0.45rem] tracking-[0.22em] text-black/50 uppercase md:text-[0.6rem]">
                 Design Company Limited
               </span>
             </div>
@@ -96,7 +96,7 @@ export default function Navbar() {
                 key={link.name}
                 href={link.href}
                 onClick={() => setIsMenuOpen(false)}
-                className="block border-b border-white/20 pb-4 text-5xl tracking-[-0.04em] text-white"
+                className="block border-b border-white/20 pb-4 text-3xl sm:text-4xl md:text-5xl tracking-[-0.04em] text-white"
               >
                 {link.name}
               </TransitionLink>

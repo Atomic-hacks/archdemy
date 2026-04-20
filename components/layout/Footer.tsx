@@ -5,13 +5,16 @@ export default function Footer() {
     <footer className="bg-black text-white">
       <div className="mx-auto grid max-w-[1296px] gap-14 px-6 py-20 md:px-10 lg:grid-cols-[1.25fr_0.95fr_0.7fr_0.7fr_0.7fr]">
         <div className="space-y-16">
-          <TransitionLink href="/" className="inline-flex items-center gap-3">
-            <img src="/logo.png" alt="logo" className="h-16 w-auto" />
+          <TransitionLink
+            href="/"
+            className="inline-flex items-center gap-2 md:gap-3"
+          >
+            <img src="/logo.png" alt="logo" className="h-10 w-auto md:h-16" />
             <div className="flex flex-col leading-tight">
-              <span className="text-[1.35rem] font-semibold tracking-[0.28em] uppercase text-amber-700">
+              <span className="text-[0.85rem] font-semibold tracking-[0.28em] uppercase text-amber-700 md:text-[1.35rem]">
                 Archademy
               </span>
-              <span className="text-[0.6rem] tracking-[0.22em] text-white/50 uppercase">
+              <span className="text-[0.45rem] tracking-[0.22em] text-white/50 uppercase md:text-[0.6rem]">
                 Design Company Limited
               </span>
             </div>

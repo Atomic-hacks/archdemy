@@ -11,13 +11,13 @@ export default function WorkPage() {
         <SectionMarker letter="A" label="Work" />
 
         <div className="grid gap-12 pb-16 lg:grid-cols-[1fr_0.95fr]">
-          <h1 className="text-[4.4rem] font-medium leading-[0.95] tracking-[-0.06em] text-black">
+          <h1 className="text-2xl font-medium leading-[0.95] tracking-[-0.06em] text-black sm:text-3xl md:text-[4.4rem]">
             Our Projects
           </h1>
-          <div className="max-w-[38rem] justify-self-end text-[1.05rem] leading-9 text-black/58">
+          <div className="max-w-[38rem] justify-self-end text-sm leading-6 text-black/58 md:text-[1.05rem] md:leading-9">
             <p>
-              Discover our portfolio of completed projects, showcasing a
-              variety of styles and functionalities.
+              Discover our portfolio of completed projects, showcasing a variety
+              of styles and functionalities.
             </p>
             <TransitionLink
               href="#projects"
