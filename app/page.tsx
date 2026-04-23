@@ -6,7 +6,7 @@ import TransitionLink from "@/components/ui/TransitionLink";
 import Link from "next/link";
 import { projects } from "@/lib/projects";
 
-const homepageProjects = projects.slice(0, 3).map((project) => ({
+const homepageProjects = projects.slice(0, 6).map((project) => ({
   location: project.location,
   year: project.completed,
   title: project.title,
@@ -17,39 +17,6 @@ const homepageProjects = projects.slice(0, 3).map((project) => ({
   image: project.heroImage,
   slug: project.slug,
 }));
-
-const processSteps = [
-  {
-    number: "#01",
-    title: "Discovery & Consultation",
-    description:
-      "We align on goals, site realities, budget, and the atmosphere you want the project to carry.",
-  },
-  {
-    number: "#02",
-    title: "Concept Design",
-    description:
-      "We translate direction into bold architectural concepts, spatial stories, and early visual language.",
-  },
-  {
-    number: "#03",
-    title: "Design Development",
-    description:
-      "Layouts, materials, and technical decisions are refined into a buildable and coherent design system.",
-  },
-  {
-    number: "#04",
-    title: "Construction Management",
-    description:
-      "Our team coordinates delivery, reviews progress, and protects the design quality throughout execution.",
-  },
-  {
-    number: "#05",
-    title: "Project Handover",
-    description:
-      "We conclude with final reviews and a complete handover so the finished space performs as intended.",
-  },
-];
 
 const services = [
   {
@@ -76,26 +43,23 @@ const services = [
       "Scalable planning strategies for sustainable communities, mixed-use growth, and stronger public experience.",
     image: "/work2.jpg",
   },
-];
-
-const testimonials = [
   {
-    quote:
-      "Archademy brought a timeless calm to our project. The result feels luxurious without losing practical clarity.",
-    name: "Jonnathan Mitchell",
-    role: "Mitchell & Co. Architects",
+    title: "Interior Renovation",
+    description:
+      "Strategic interior redesign that enhances functionality, aesthetics, and user experience for residential and commercial spaces.",
+    image: "/const1.jpg",
   },
   {
-    quote:
-      "Their perspective on materiality and proportion pushed our design much further than we initially imagined.",
-    name: "Emily Chen",
-    role: "Chen Design Group",
+    title: "Structural Engineering",
+    description:
+      "Advanced structural solutions that ensure safety, longevity, and innovative design possibilities within technical constraints.",
+    image: "/const1.jpg",
   },
   {
-    quote:
-      "We came for sustainable solutions and stayed for the rigor. Every decision felt innovative and grounded.",
-    name: "Liam O'Reilly",
-    role: "O'Reilly Urban Planning",
+    title: "Sustainability Consulting",
+    description:
+      "Integrated sustainable design strategies that reduce environmental impact while improving building performance and occupant wellbeing.",
+    image: "/const1.jpg",
   },
 ];
 
@@ -160,195 +124,228 @@ function SectionLabel({
   );
 }
 
+function BentoCell({
+  project,
+  className,
+}: {
+  project: (typeof homepageProjects)[0];
+  className: string;
+}) {
+  return (
+    <TransitionLink
+      href={`/work/${project.slug}`}
+      className={`group relative overflow-hidden ${className}`}
+    >
+      <RevealImage
+        src={project.image}
+        alt={project.title}
+        className="absolute inset-0 w-full h-full object-cover brightness-[0.88] transition-[transform,filter] duration-700 ease-[cubic-bezier(0.25,0.46,0.45,0.94)] group-hover:scale-[1.04] group-hover:brightness-[0.5]"
+      />
+
+      {/* On touch devices (@media hover: none) the overlay is always partially visible */}
+      <div className="absolute inset-0 flex flex-col justify-end p-[18px] opacity-100 [@media(hover:hover)]:opacity-0 group-hover:opacity-100 transition-opacity duration-400">
+        <div className="border-t border-white/25 pt-3">
+          <p className="text-[10px] uppercase tracking-[0.15em] text-white/50 mb-1.5">
+            {project.location} · {project.year}
+          </p>
+          <p className="text-[15px] font-medium text-white leading-tight mb-2.5">
+            {project.title}
+          </p>
+          <div className="flex items-center justify-between">
+            <span className="text-[10px] uppercase tracking-[0.12em] text-white/45">
+              {project.category}
+            </span>
+            <span className="w-7 h-7 border border-white/30 rounded-full flex items-center justify-center text-white text-[13px] group-hover:bg-white/10 group-hover:border-white/60 transition-all">
+              →
+            </span>
+          </div>
+        </div>
+      </div>
+    </TransitionLink>
+  );
+}
+
 export default function HomePage() {
   return (
     <main className="bg-white text-black">
       <ParallaxHero videoSrc="/hero-video.mp4">
-        <div className="max-w-[720px]">
+        <div className="max-w-[820px]">
           <p className="mb-4 text-[0.65rem] uppercase tracking-[0.16em] text-white/80 md:mb-6 md:text-[0.72rem]">
-            #World&apos;s Number One
+            Creating Spaces of Wonder
           </p>
-          <h1 className="max-w-[820px] text-[2.5rem] font-medium leading-[0.98] tracking-[-0.04em] text-white sm:text-4xl md:text-7xl">
-            Crafting <span className="text-amber-700">Unique</span> Spaces with
-            Innovative <span className="text-amber-700">Architectural</span>{" "}
-            Solutions
+          <h1 className="max-w-[820px] text-[2.5rem] font-medium leading-[0.95] tracking-[-0.04em] text-white sm:text-4xl md:text-7xl">
+            Reimagining the Built Environment
           </h1>
         </div>
 
         <div className="mt-10 flex flex-col items-start justify-between gap-4 border-t border-white/20 pt-4 md:mt-14 md:gap-6 md:pt-6 md:flex-row md:items-end">
           <div className="max-w-xs border-l border-[var(--burnt-orange)] pl-4 text-xs leading-6 text-white/82 md:text-sm md:leading-7">
-            The power of architecture to transform lives and communities.
+            We create spaces that provoke wonder while building deep connections
+            between people and their surroundings.
           </div>
-          <AnimatedPillButton href="/work" label="Our Projects" light />
+          <AnimatedPillButton href="/work" label="View Work" light />
         </div>
       </ParallaxHero>
-
-      <section className="bg-white py-20 md:py-28">
-        <div className="mx-auto max-w-[1120px] px-6 md:px-10 lg:px-0">
-          <SectionLabel letter="A" title="About Us" />
-
-          <div className="grid gap-12 lg:grid-cols-[1.2fr_1fr_1fr]">
-            <RevealContent className="flex flex-col justify-center">
-              <h2 className="text-2xl font-medium leading-[1.05] tracking-[-0.04em] sm:text-3xl md:text-4xl lg:text-5xl">
-                Discover Our Journey to Architectural Excellence
-              </h2>
-              <div className="mt-6 space-y-4 text-sm leading-6 text-neutral-600 md:mt-8 md:space-y-6 md:text-[1rem] md:leading-8">
-                <p>
-                  Archademy has evolved into a design practice known for clear
-                  thinking, refined form-making, and architecture rooted in real
-                  context.
-                </p>
-                <p>
-                  We combine technical discipline with a strong artistic point
-                  of view, shaping spaces that feel modern, warm, and built to
-                  last.
-                </p>
-              </div>
-              <div className="mt-8">
-                <AnimatedPillButton href="/work" label="View All Projects" />
-              </div>
-            </RevealContent>
-
-            <RevealImage
-              src="/work4.jpg"
-              alt="Vertical architectural facade"
-              className="aspect-square bg-neutral-100"
-              direction="up"
-            />
-
-            <RevealImage
-              src="/const1.jpg"
-              alt="Studio collaboration"
-              className="aspect-square bg-neutral-100"
-              direction="left"
-            />
-          </div>
-
-          <div className="mt-20 grid gap-8 border-t border-neutral-200 pt-12 md:grid-cols-3">
-            <RevealContent delay={0.1}>
-              <div>
-                <p className="text-5xl font-medium tracking-[-0.05em]">100%</p>
-                <p className="mt-3 text-sm leading-6 text-neutral-600 max-w-xs">
-                  Projects successfully delivered with a detail-driven studio
-                  process
-                </p>
-              </div>
-            </RevealContent>
-            <RevealContent delay={0.2}>
-              <div>
-                <p className="text-5xl font-medium tracking-[-0.05em]">12+</p>
-                <p className="mt-3 text-sm leading-6 text-neutral-600 max-w-xs">
-                  Years shaping residential, commercial, and hospitality
-                  experiences
-                </p>
-              </div>
-            </RevealContent>
-            <RevealContent delay={0.3}>
-              <div>
-                <p className="text-5xl font-medium tracking-[-0.05em]">50+</p>
-                <p className="mt-3 text-sm leading-6 text-neutral-600 max-w-xs">
-                  Completed projects across diverse sectors and geographies
-                </p>
-              </div>
-            </RevealContent>
-          </div>
-        </div>
-      </section>
-
       <section className="bg-white py-20 md:py-32">
-        <div className="mx-auto max-w-[1120px] px-6 md:px-10 lg:px-0">
+        <div className="mx-auto  px-6 md:px-10 ">
           <SectionLabel letter="B" title="Work" />
-
           <div className="mb-16 flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
             <div>
               <h2 className="text-4xl font-medium tracking-[-0.04em] md:text-5xl">
                 Featured Projects
               </h2>
               <p className="mt-3 max-w-xl text-base leading-7 text-neutral-600">
-                Discover a curated portfolio of completed projects, each shaped
-                by atmosphere, precision, and a strong architectural identity.
+                Discover a selection of completed projects shaped by atmosphere,
+                precision, and architectural clarity.
               </p>
             </div>
             <AnimatedPillButton href="/work" label="View All Projects" />
           </div>
+          <section className="grid gap-[3px] p-[3px]">
+            {/* Row 1 — 4 cols on xl, 2 on md, 1 on mobile */}
+            <div
+              className="grid gap-[3px] grid-cols-1 md:grid-cols-2 xl:grid-cols-4"
+              style={{
+                gridTemplateColumns: undefined, // let Tailwind classes take over on small screens
+              }}
+            >
+              {homepageProjects.slice(0, 4).map((project) => (
+                <BentoCell
+                  key={project.slug}
+                  project={project}
+                  className="h-[56vw] md:h-[38vw] xl:h-[480px]"
+                />
+              ))}
+            </div>
 
-          <div className="space-y-20 border-t border-neutral-200">
-            {homepageProjects.map((project, index) => (
-              <RevealContent key={project.title} delay={index * 0.15}>
-                <article className="grid gap-10 pt-20 lg:grid-cols-[1fr_1.4fr]">
-                  <div className="flex flex-col justify-between gap-8">
-                    <div>
-                      <p className="text-[0.72rem] uppercase tracking-[0.16em] text-neutral-500">
-                        {project.location} · {project.year}
-                      </p>
-                      <h3 className="mt-6 text-4xl font-medium leading-tight tracking-[-0.03em]">
-                        {project.title}
-                      </h3>
-                      <p className="mt-6 text-base leading-7 text-neutral-600">
-                        {project.description}
-                      </p>
-                    </div>
-                    <div className="flex flex-col gap-4">
-                      <dl className="grid grid-cols-[auto_1fr] gap-x-8 gap-y-4 text-sm">
-                        <dt className="uppercase tracking-[0.16em] text-neutral-400">
-                          Category
-                        </dt>
-                        <dd className="font-medium text-neutral-950">
-                          {project.category}
-                        </dd>
-                        <dt className="uppercase tracking-[0.16em] text-neutral-400">
-                          Size
-                        </dt>
-                        <dd className="font-medium text-neutral-950">
-                          {project.size}
-                        </dd>
-                        <dt className="uppercase tracking-[0.16em] text-neutral-400">
-                          Service
-                        </dt>
-                        <dd className="font-medium text-neutral-950">
-                          {project.service}
-                        </dd>
-                      </dl>
-                      <TransitionLink
-                        href={`/work/${project.slug}`}
-                        className="inline-flex items-center gap-3 text-[0.78rem] uppercase tracking-[0.14em] text-neutral-800 hover:text-[var(--burnt-orange)] transition-colors mt-4"
-                      >
-                        Explore Project
-                        <span className="text-[var(--burnt-orange)]">→</span>
-                      </TransitionLink>
-                    </div>
-                  </div>
+            {/* Row 2 — 2 cols on md+, 1 on mobile */}
+            <div className="grid gap-[3px] grid-cols-1 md:grid-cols-2">
+              {homepageProjects.slice(4, 6).map((project) => (
+                <BentoCell
+                  key={project.slug}
+                  project={project}
+                  className="h-[72vw] md:h-[48vw] xl:h-[620px]"
+                />
+              ))}
+            </div>
+          </section>
+          see more -
+        </div>
+      </section>
 
-                  <RevealImage
-                    src={project.image}
-                    alt={project.title}
-                    className="aspect-square bg-neutral-100"
-                    direction={index % 2 === 0 ? "up" : "left"}
-                  />
-                </article>
-              </RevealContent>
-            ))}
+      <section className="bg-white py-20 md:py-28">
+        <div className="mx-auto px-6 md:px-10 ">
+          <SectionLabel letter="A" title="About" />
+
+          <div className="grid gap-12 lg:grid-cols-2">
+            <RevealContent className="flex flex-col justify-center">
+              <h2 className="text-2xl font-medium leading-[1.1] tracking-[-0.04em] sm:text-3xl md:text-5xl">
+                150+ people across 3 continents
+              </h2>
+              <div className="mt-6 space-y-4 text-sm leading-6 text-neutral-600 md:mt-8 md:space-y-6 md:text-base md:leading-8">
+                <p>
+                  Archademy is composed of architects, designers, and
+                  specialists united by a shared vision of transforming the
+                  built environment through disciplined creativity.
+                </p>
+                <p>
+                  Our practice reimagines spaces that provoke wonder while
+                  building deep connections between people and their
+                  surroundings.
+                </p>
+              </div>
+              <div className="mt-8">
+                <AnimatedPillButton href="/about" label="Meet the Team" />
+              </div>
+            </RevealContent>
+
+            <RevealImage
+              src="/work1.jpg"
+              alt="Team collaboration"
+              className="aspect-square bg-neutral-100"
+              direction="left"
+            />
+          </div>
+
+          <div className="mt-20 mx-auto max-w-7xl grid gap-8 border-t border-neutral-200 pt-12 md:grid-cols-3">
+            <RevealContent delay={0.1}>
+              <div>
+                <p className="text-5xl font-medium tracking-[-0.05em]">25+</p>
+                <p className="mt-3 text-sm leading-6 text-neutral-600 max-w-xs">
+                  Years of practice and innovation in architecture
+                </p>
+              </div>
+            </RevealContent>
+            <RevealContent delay={0.2}>
+              <div>
+                <p className="text-5xl font-medium tracking-[-0.05em]">200+</p>
+                <p className="mt-3 text-sm leading-6 text-neutral-600 max-w-xs">
+                  Completed projects across residential, commercial, and
+                  hospitality
+                </p>
+              </div>
+            </RevealContent>
+            <RevealContent delay={0.3}>
+              <div>
+                <p className="text-5xl font-medium tracking-[-0.05em]">
+                  Global
+                </p>
+                <p className="mt-3 text-sm leading-6 text-neutral-600 max-w-xs">
+                  Practice with presence across Asia, Europe, and North America
+                </p>
+              </div>
+            </RevealContent>
           </div>
         </div>
       </section>
 
       <section className="bg-black py-24 text-white md:py-32">
         <div className="mx-auto max-w-[1120px] px-6 md:px-10 lg:px-0">
-          <SectionLabel letter="C" title="Process" dark />
+          <SectionLabel letter="C" title="Approach" dark />
 
           <div className="mb-20">
             <h2 className="text-4xl font-medium leading-[1.1] tracking-[-0.04em] md:text-5xl max-w-2xl">
-              Our Collaborative Working Process
+              Our Design Philosophy
             </h2>
             <p className="mt-6 text-lg leading-8 text-white/60 max-w-2xl">
-              From initial discovery through final delivery, we maintain a
-              structured yet flexible approach that keeps you informed and
-              engaged at every stage.
+              We believe great architecture emerges from disciplined thinking,
+              contextual sensitivity, and a commitment to material excellence.
             </p>
           </div>
 
           <div className="grid gap-12 lg:grid-cols-5">
-            {processSteps.map((step, index) => (
+            {[
+              {
+                number: "01",
+                title: "Discovery",
+                description:
+                  "We align on goals, site realities, budget, and the atmosphere you want to create.",
+              },
+              {
+                number: "02",
+                title: "Concept",
+                description:
+                  "We translate direction into bold architectural concepts and spatial stories.",
+              },
+              {
+                number: "03",
+                title: "Design",
+                description:
+                  "Layouts, materials, and technical decisions are refined into coherent systems.",
+              },
+              {
+                number: "04",
+                title: "Delivery",
+                description:
+                  "Our team coordinates delivery and protects design quality throughout execution.",
+              },
+              {
+                number: "05",
+                title: "Handover",
+                description:
+                  "We conclude with final reviews so the space performs as intended.",
+              },
+            ].map((step, index) => (
               <RevealContent
                 key={step.number}
                 delay={index * 0.12}
@@ -375,8 +372,8 @@ export default function HomePage() {
 
       <section className="bg-white py-20 md:py-32">
         <div className="w-full px-4 md:px-8 lg:px-12">
-          <div className="mx-auto max-w-[1400px]">
-            <SectionLabel letter="C" title="Services" />
+          <div className="mx-auto">
+            <SectionLabel letter="D" title="Services" />
 
             <div className="mb-20 flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
               <div>
@@ -386,7 +383,7 @@ export default function HomePage() {
                 <p className="mt-3 max-w-2xl text-base leading-7 text-neutral-600">
                   Specialized architectural and design services tailored to
                   ambitious clients seeking clarity, elegance, and dependable
-                  delivery across all project scales.
+                  delivery.
                 </p>
               </div>
               <AnimatedPillButton href="/contact" label="Get In Touch" />
@@ -394,7 +391,7 @@ export default function HomePage() {
 
             <div className="grid gap-16 md:grid-cols-2">
               {services.map((service, index) => (
-                <RevealContent key={service.title} delay={index * 0.12}>
+                <RevealContent key={`service-${index}`} delay={index * 0.12}>
                   <article className="flex flex-col h-full">
                     <RevealImage
                       src={service.image}
@@ -435,14 +432,14 @@ export default function HomePage() {
           }}
         />
         <div className="absolute inset-0 bg-black/70" />
-        <div className="relative mx-auto max-w-[1120px] px-6 text-center md:px-10 lg:px-0">
+        <div className="relative mx-auto px-6 text-center md:px-10 lg:px-0">
           <RevealContent>
             <h2 className="mx-auto max-w-4xl text-4xl font-medium leading-tight tracking-[-0.04em] md:text-6xl">
-              Let&apos;s Create Something Meaningful Together
+              Ready to Create Something Meaningful?
             </h2>
             <p className="mt-6 mx-auto max-w-2xl text-lg leading-8 text-white/75">
               Whether you&apos;re beginning with a sketch, a site, or a clear
-              vision, we&apos;re ready to help shape the next chapter.
+              vision, we&apos;re ready to help bring your next project to life.
             </p>
             <div className="mt-8">
               <AnimatedPillButton href="/contact" label="Contact Us" light />
@@ -451,42 +448,8 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section className="bg-black py-24 text-white md:py-32">
-        <div className="mx-auto max-w-[1120px] px-6 md:px-10 lg:px-0">
-          <SectionLabel letter="D" title="Testimonials" dark />
-
-          <h2 className="mb-16 text-3xl font-medium leading-tight tracking-[-0.04em] md:text-5xl max-w-3xl">
-            What Our Clients Say
-          </h2>
-
-          <div className="grid gap-8 lg:grid-cols-2">
-            {testimonials.map((testimonial, index) => (
-              <RevealContent
-                key={testimonial.name}
-                delay={index * 0.15}
-                direction={index % 2 === 0 ? "up" : "left"}
-              >
-                <article className="bg-white/5 backdrop-blur-sm border border-white/10 p-10 text-white hover:border-white/30 transition-colors duration-300">
-                  <p className="text-lg leading-8 text-white/90">
-                    &ldquo;{testimonial.quote}&rdquo;
-                  </p>
-                  <div className="mt-10 pt-8 border-t border-white/10">
-                    <p className="text-lg font-medium tracking-[-0.02em]">
-                      {testimonial.name}
-                    </p>
-                    <p className="mt-2 text-sm text-white/60">
-                      {testimonial.role}
-                    </p>
-                  </div>
-                </article>
-              </RevealContent>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      <section className="bg-white py-20 md:py-32">
-        <div className="mx-auto max-w-[1120px] px-6 md:px-10 lg:px-0">
+      <section className="bg-white py-24 md:py-32">
+        <div className="mx-auto px-6 md:px-10">
           <SectionLabel letter="E" title="Insights" />
 
           <div className="mb-20 flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
@@ -502,33 +465,41 @@ export default function HomePage() {
             <AnimatedPillButton href="/work" label="View All" />
           </div>
 
-          <div className="space-y-16">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             {posts.map((post, index) => (
               <RevealContent key={post.title} delay={index * 0.15}>
-                <article className="grid gap-10 items-center md:grid-cols-[1.2fr_1.3fr]">
-                  <RevealImage
+                <article className="group relative overflow-hidden aspect-[3/4] cursor-pointer">
+                  {/* Image */}
+                  <img
                     src={post.image}
                     alt={post.title}
-                    className="aspect-square bg-neutral-100"
-                    direction={index % 2 === 0 ? "left" : "up"}
+                    className="w-full h-full object-cover transition-transform duration-700 ease-[cubic-bezier(0.25,0.46,0.45,0.94)] group-hover:scale-[1.07]"
                   />
 
-                  <div className="flex flex-col justify-center gap-6">
-                    <div>
-                      <p className="text-sm text-neutral-500 uppercase tracking-[0.12em]">
-                        {post.date} · {post.category}
-                      </p>
-                      <h3 className="mt-4 text-3xl font-medium leading-tight tracking-[-0.03em] md:text-4xl">
-                        {post.title}
-                      </h3>
-                      <p className="mt-6 text-lg leading-8 text-neutral-600 max-w-lg">
-                        {post.description}
-                      </p>
-                    </div>
+                  {/* Gradient overlay */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/35 to-black/[0.08] transition-all duration-400 group-hover:from-black/92 group-hover:via-black/55 group-hover:to-black/20" />
 
+                  {/* Content */}
+                  <div className="absolute bottom-0 left-0 right-0 p-6 translate-y-1 transition-transform duration-400 group-hover:translate-y-0">
+                    {/* Meta */}
+                    <p className="text-[11px] tracking-[0.12em] uppercase text-white/55 mb-2 transition-colors duration-400 group-hover:text-white/75">
+                      {post.date} · {post.category}
+                    </p>
+
+                    {/* Title */}
+                    <h3 className="text-base font-medium leading-snug text-white/88 transition-colors duration-400 group-hover:text-white">
+                      {post.title}
+                    </h3>
+
+                    {/* Description — reveals on hover */}
+                    <p className="mt-0 max-h-0 overflow-hidden text-[13px] leading-relaxed text-transparent transition-all duration-450 group-hover:mt-2 group-hover:max-h-20 group-hover:text-white/72">
+                      {post.description}
+                    </p>
+
+                    {/* Link — reveals on hover */}
                     <Link
                       href="/about"
-                      className="inline-flex items-center gap-3 text-[0.78rem] uppercase tracking-[0.14em] text-neutral-800 hover:text-[var(--burnt-orange)] transition-colors w-fit"
+                      className="inline-flex items-center gap-1.5 text-[11px] uppercase tracking-[0.14em] text-transparent max-h-0 overflow-hidden transition-all duration-450 mt-0 group-hover:text-white/85 group-hover:max-h-8 group-hover:mt-3"
                     >
                       Read Article
                       <span className="text-[var(--burnt-orange)]">→</span>

@@ -1,94 +1,169 @@
+"use client";
+
+import { useState, useMemo } from "react";
 import CollaborationCta from "@/components/ui/CollaborationCta";
-import RevealImage from "@/components/ui/RevealImage";
+import RevealContent from "@/components/ui/RevealContent";
 import SectionMarker from "@/components/ui/SectionMarker";
-import TransitionLink from "@/components/ui/TransitionLink";
-import { projects } from "@/lib/projects";
+import ProjectModal from "@/components/ui/ProjectModal";
+import { projects, Project } from "@/lib/projects";
+import Image from "next/image";
+
+const ALL = "All";
 
 export default function WorkPage() {
+  const [selectedProject, setSelectedProject] = useState<Project | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [activeCategory, setActiveCategory] = useState(ALL);
+
+  const categories = useMemo(() => {
+    const cats = Array.from(new Set(projects.map((p) => p.category)));
+    return [ALL, ...cats];
+  }, []);
+
+  const countByCategory = useMemo(() => {
+    const map: Record<string, number> = { [ALL]: projects.length };
+    projects.forEach((p) => {
+      map[p.category] = (map[p.category] ?? 0) + 1;
+    });
+    return map;
+  }, []);
+
+  const filtered = useMemo(
+    () =>
+      activeCategory === ALL
+        ? projects
+        : projects.filter((p) => p.category === activeCategory),
+    [activeCategory],
+  );
+
+  const handleProjectClick = (project: Project) => {
+    setSelectedProject(project);
+    setIsModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+    setTimeout(() => setSelectedProject(null), 300);
+  };
+
+  const heights = ["aspect-square", "aspect-[0.85]", "aspect-[1.15]"];
+
   return (
     <main className="bg-white text-black">
-      <section className="mx-auto max-w-[1296px] px-6 pb-24 pt-40 md:px-10 md:pt-44">
+      <section className="mx-auto px-6 pb-24 pt-40 md:px-10 md:pt-44">
         <SectionMarker letter="A" label="Work" />
 
         <div className="grid gap-12 pb-16 lg:grid-cols-[1fr_0.95fr]">
-          <h1 className="text-2xl font-medium leading-[0.95] tracking-[-0.06em] text-black sm:text-3xl md:text-[4.4rem]">
-            Our Projects
-          </h1>
-          <div className="max-w-[38rem] justify-self-end text-sm leading-6 text-black/58 md:text-[1.05rem] md:leading-9">
-            <p>
+          <div>
+            <h1 className="text-2xl font-medium leading-[0.95] tracking-[-0.06em] text-black sm:text-3xl md:text-[4.4rem]">
+              Our Projects
+            </h1>
+            <p className="mt-6 text-sm leading-6 text-black/58 md:text-[1.05rem] md:leading-9">
               Discover our portfolio of completed projects, showcasing a variety
-              of styles and functionalities.
+              of styles and functionalities across residential, commercial, and
+              hospitality sectors.
             </p>
-            <TransitionLink
-              href="#projects"
-              disabledTransition
-              className="mt-6 inline-flex items-center gap-2 text-black"
-            >
-              Check out all Projects.
-              <span className="text-[var(--burnt-orange)]">↓</span>
-            </TransitionLink>
           </div>
         </div>
 
-        <div id="projects" className="border-t border-black/10">
-          {projects.map((project, index) => (
-            <article
-              key={project.slug}
-              className="grid gap-10 border-b border-black/10 py-16 lg:grid-cols-[0.88fr_1fr_0.74fr]"
-            >
-              <div className="flex flex-col justify-between gap-12">
-                <div>
-                  <p className="text-[0.92rem] uppercase tracking-[0.04em] text-black/52">
-                    {project.location} - {project.completed}
-                  </p>
-                  <h2 className="mt-4 max-w-[18rem] text-[3rem] font-medium leading-[1.05] tracking-[-0.05em] text-black">
-                    {project.title}
-                  </h2>
-                </div>
-
-                <TransitionLink
-                  href={`/work/${project.slug}`}
-                  className="inline-flex items-center gap-3 text-[0.95rem] uppercase tracking-[0.04em] text-black"
+        {/* Filter tabs */}
+        <div id="projects" className="border-t border-black/10 pt-10">
+          <div className="flex gap-0 border-b border-black/10 mb-10 overflow-x-auto">
+            {categories.map((cat) => (
+              <button
+                key={cat}
+                onClick={() => setActiveCategory(cat)}
+                className={`
+                  shrink-0 text-[11px] uppercase tracking-[0.07em] px-5 py-3
+                  border-b-[1.5px] -mb-px transition-colors duration-200
+                  ${
+                    activeCategory === cat
+                      ? "text-black border-black"
+                      : "text-black/40 border-transparent hover:text-black/70"
+                  }
+                `}
+              >
+                {cat}
+                <span
+                  className={`
+                    inline-flex items-center justify-center ml-2 text-[10px]
+                    rounded-full px-1.5 min-w-[18px] h-[18px]
+                    ${activeCategory === cat ? "bg-black/8 text-black/60" : "bg-black/5 text-black/35"}
+                  `}
                 >
-                  Read More
-                  <span className="tracking-[0.3em] text-[var(--burnt-orange)]">
-                    ...
-                  </span>
-                </TransitionLink>
-              </div>
+                  {countByCategory[cat] ?? 0}
+                </span>
+              </button>
+            ))}
+          </div>
 
-              <RevealImage
-                src={project.heroImage}
-                alt={project.title}
-                className="aspect-[1.5] bg-neutral-100"
-                imgClassName="select-none"
-                direction={index % 2 === 0 ? "up" : "left"}
-              />
+          {/* Results count */}
+          <p className="text-[11px] tracking-wide text-black/35 uppercase mb-8">
+            {activeCategory === ALL
+              ? `All ${filtered.length} projects`
+              : `${filtered.length} ${activeCategory.toLowerCase()} project${filtered.length !== 1 ? "s" : ""}`}
+          </p>
 
-              <div className="grid content-start gap-10 text-[1.05rem] leading-9 text-black/58">
-                <p>{project.description}</p>
+          {/* Grid */}
+          <div className="grid gap-6 md:gap-8 auto-rows-max md:grid-cols-2 lg:grid-cols-3">
+            {filtered.map((project, index) => (
+              <RevealContent key={project.slug} delay={index * 0.06}>
+                <article
+                  onClick={() => handleProjectClick(project)}
+                  className="group cursor-pointer h-full"
+                >
+                  {/* Image */}
+                  <div
+                    className={`relative overflow-hidden bg-neutral-100 mb-4 ${heights[index % heights.length]}`}
+                  >
+                    <Image
+                      src={project.heroImage}
+                      alt={project.title}
+                      fill
+                      className="object-cover transition-transform duration-500 ease-[cubic-bezier(0.25,0.46,0.45,0.94)] group-hover:scale-[1.04]"
+                    />
+                    {/* Index marker */}
+                    <span className="absolute top-3 left-3 text-[10px] tracking-[0.08em] text-white/65">
+                      {String(index + 1).padStart(2, "0")}
+                    </span>
+                  </div>
 
-                <dl className="grid grid-cols-[auto_1fr] gap-x-10 gap-y-6 text-[0.98rem]">
-                  <dt className="uppercase tracking-[0.04em] text-black/42">
-                    Category
-                  </dt>
-                  <dd className="font-medium text-black">{project.category}</dd>
-                  <dt className="uppercase tracking-[0.04em] text-black/42">
-                    Size
-                  </dt>
-                  <dd className="font-medium text-black">{project.size}</dd>
-                  <dt className="uppercase tracking-[0.04em] text-black/42">
-                    Service
-                  </dt>
-                  <dd className="font-medium text-black">{project.service}</dd>
-                </dl>
-              </div>
-            </article>
-          ))}
+                  {/* Content */}
+                  <div className="space-y-2">
+                    <p className="text-[11px] uppercase tracking-[0.06em] text-black/40">
+                      {project.location} · {project.completed}
+                    </p>
+                    <h2 className="text-base md:text-lg font-medium leading-snug tracking-[-0.025em] group-hover:text-[var(--burnt-orange)] transition-colors duration-200">
+                      {project.title}
+                    </h2>
+                    <p className="text-sm leading-6 text-black/55 line-clamp-2">
+                      {project.description}
+                    </p>
+
+                    {/* Tags */}
+                    <div className="flex flex-wrap gap-1.5 pt-2">
+                      <span className="text-[11px] bg-black/[0.04] text-black/55 px-2.5 py-1 rounded-full">
+                        {project.category}
+                      </span>
+                      <span className="text-[11px] bg-black/[0.04] text-black/55 px-2.5 py-1 rounded-full">
+                        {project.service}
+                      </span>
+                    </div>
+                  </div>
+                </article>
+              </RevealContent>
+            ))}
+          </div>
         </div>
       </section>
 
       <CollaborationCta />
+
+      <ProjectModal
+        project={selectedProject}
+        isOpen={isModalOpen}
+        onClose={handleCloseModal}
+      />
     </main>
   );
 }
