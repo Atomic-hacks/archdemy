@@ -11,7 +11,7 @@ export default function Footer() {
           >
             <img src="/logo.png" alt="logo" className="h-10 w-auto md:h-16" />
             <div className="flex flex-col leading-tight">
-              <span className="text-[0.85rem] font-semibold tracking-[0.28em] uppercase text-amber-700 md:text-[1.35rem]">
+              <span className="text-[0.85rem] font-semibold tracking-[0.28em] uppercase text-[var(--burnt-orange)] md:text-[1.35rem]">
                 Archademy
               </span>
               <span className="text-[0.45rem] tracking-[0.22em] text-white/50 uppercase md:text-[0.6rem]">

@@ -41,6 +41,8 @@
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 4px);
+  --color-burnt-orange: var(--burnt-orange);
+  --color-burnt-orange-deep: var(--burnt-orange-deep);
 }
 
 :root {
@@ -81,7 +83,7 @@
 }
 
 .dark {
-  --background: #050505;
+  --background: #ffffff;
   --foreground: #ffffff;
   --card: #101010;
   --card-foreground: #ffffff;

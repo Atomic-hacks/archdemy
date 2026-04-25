@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useLayoutEffect, useRef, useState } from "react";
 import gsap from "gsap";
 import { Project } from "@/lib/projects";
 import Image from "next/image";
@@ -16,39 +16,60 @@ export default function ProjectModal({ project, isOpen, onClose }: ProjectModalP
   const contentRef = useRef<HTMLDivElement>(null);
   const [isVisible, setIsVisible] = useState(false);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
+    const overlay = overlayRef.current;
+    const content = contentRef.current;
+
+    if (!overlay || !content) {
+      return;
+    }
+
     if (isOpen) {
       setIsVisible(true);
-      // Lock body scroll — also need to store the current scrollY to restore it
+
       const scrollY = window.scrollY;
       document.body.style.position = "fixed";
       document.body.style.top = `-${scrollY}px`;
       document.body.style.width = "100%";
 
       const ctx = gsap.context(() => {
-        gsap.set(overlayRef.current, { opacity: 0 });
-        gsap.set(contentRef.current, { opacity: 0, y: 24 });
-        gsap.to(overlayRef.current, { opacity: 1, duration: 0.3, ease: "power2.out" });
-        gsap.to(contentRef.current, { opacity: 1, y: 0, duration: 0.45, ease: "power2.out", delay: 0.08 });
-      });
-      return () => ctx.revert();
-    } else {
-      // Restore body scroll position
-      const scrollY = document.body.style.top;
-      document.body.style.position = "";
-      document.body.style.top = "";
-      document.body.style.width = "";
-      window.scrollTo(0, parseInt(scrollY || "0") * -1);
-
-      const ctx = gsap.context(() => {
-        gsap.to(overlayRef.current, {
-          opacity: 0, duration: 0.2, ease: "power2.in",
-          onComplete: () => setIsVisible(false),
+        gsap.set(overlay, { opacity: 0 });
+        gsap.set(content, { opacity: 0, y: 24 });
+        gsap.to(overlay, { opacity: 1, duration: 0.3, ease: "power2.out" });
+        gsap.to(content, {
+          opacity: 1,
+          y: 0,
+          duration: 0.45,
+          ease: "power2.out",
+          delay: 0.08,
         });
-        gsap.to(contentRef.current, { opacity: 0, y: 24, duration: 0.2, ease: "power2.in" });
-      });
+      }, overlay);
+
       return () => ctx.revert();
     }
+
+    const scrollY = document.body.style.top;
+    document.body.style.position = "";
+    document.body.style.top = "";
+    document.body.style.width = "";
+    window.scrollTo(0, parseInt(scrollY || "0", 10) * -1);
+
+    const ctx = gsap.context(() => {
+      gsap.to(overlay, {
+        opacity: 0,
+        duration: 0.2,
+        ease: "power2.in",
+        onComplete: () => setIsVisible(false),
+      });
+      gsap.to(content, {
+        opacity: 0,
+        y: 24,
+        duration: 0.2,
+        ease: "power2.in",
+      });
+    }, overlay);
+
+    return () => ctx.revert();
   }, [isOpen]);
 
   if (!isVisible || !project) return null;

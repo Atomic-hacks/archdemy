@@ -1,34 +1,76 @@
+import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import {
-  CalendarDays,
-  LayoutGrid,
-  MapPin,
-  PencilRuler,
-  UserRound,
-} from "lucide-react";
-import CollaborationCta from "@/components/ui/CollaborationCta";
+import AnimatedPillButton from "@/components/ui/AnimatedPillButton";
 import RevealImage from "@/components/ui/RevealImage";
-import SectionMarker from "@/components/ui/SectionMarker";
 import TransitionLink from "@/components/ui/TransitionLink";
-import { getProjectBySlug, projects } from "@/lib/projects";
+import {
+  getNextProject,
+  getProjectBySlug,
+  projects,
+  type Project,
+} from "@/lib/projects";
 
-export function generateStaticParams() {
+type WorkDetailPageProps = {
+  params: Promise<{
+    slug: string;
+  }>;
+};
+
+type DetailMetaItemProps = {
+  label: string;
+  value: string;
+};
+
+const detailMetaItems = (project: Project) => [
+  { label: "Year", value: project.completed },
+  { label: "Category", value: project.category },
+  { label: "Size", value: project.size },
+  { label: "Location", value: project.location },
+];
+
+const scopeItems = (project: Project) => [
+  { label: "Scope", value: project.scopeDetail ?? project.service },
+  { label: "Structure", value: project.structure ?? "—" },
+  { label: "Facade", value: project.facade ?? "—" },
+  { label: "Contractor", value: project.contractor ?? "—" },
+];
+
+export async function generateStaticParams() {
   return projects.map((project) => ({ slug: project.slug }));
 }
 
-const metaItems = [
-  { key: "client", label: "Client", icon: UserRound },
-  { key: "service", label: "Service", icon: PencilRuler },
-  { key: "location", label: "Location", icon: MapPin },
-  { key: "category", label: "Category", icon: LayoutGrid },
-  { key: "completed", label: "Completed", icon: CalendarDays },
-] as const;
-
-export default async function ProjectDetailPage({
+export async function generateMetadata({
   params,
-}: {
-  params: Promise<{ slug: string }>;
-}) {
+}: WorkDetailPageProps): Promise<Metadata> {
+  const { slug } = await params;
+  const project = getProjectBySlug(slug);
+
+  if (!project) {
+    return {
+      title: "Project Not Found | Archademy",
+    };
+  }
+
+  return {
+    title: `${project.title} | Archademy`,
+    description: project.description,
+  };
+}
+
+function DetailMetaItem({ label, value }: DetailMetaItemProps) {
+  return (
+    <div className="flex flex-col gap-1.5">
+      <span className="text-[0.62rem] uppercase tracking-[0.08em] text-white/45">
+        [{label}]
+      </span>
+      <span className="text-[0.72rem] leading-6 text-white/72">{value}</span>
+    </div>
+  );
+}
+
+export default async function WorkDetailPage({
+  params,
+}: WorkDetailPageProps) {
   const { slug } = await params;
   const project = getProjectBySlug(slug);
 
@@ -36,188 +78,168 @@ export default async function ProjectDetailPage({
     notFound();
   }
 
-  const relatedProjects = projects.filter((item) => item.slug !== project.slug).slice(0, 2);
+  const nextProject = getNextProject(slug);
 
   return (
-    <main className="bg-white text-black">
-      <section className="mx-auto max-w-[1296px] px-6 pb-24 pt-40 md:px-10 md:pt-44">
-        <SectionMarker letter="A" label="Work" />
+    <main className="min-h-screen bg-[#0f0f0f] text-white">
+      <div className="relative overflow-hidden">
+        <RevealImage
+          src={project.heroImage}
+          alt={project.title}
+          className="relative aspect-[16/9] w-full md:aspect-[16/7]"
+          imgClassName="object-center"
+          direction="right"
+        />
+        <div className="pointer-events-none absolute inset-x-0 bottom-0 h-[40%] bg-gradient-to-b from-transparent to-[#0f0f0f]" />
+      </div>
 
-        <div className="grid gap-12 lg:grid-cols-[1fr_0.95fr]">
-          <h1 className="max-w-[34rem] text-[4.3rem] font-medium leading-[0.96] tracking-[-0.06em]">
-            {project.title}
-          </h1>
-          <div className="max-w-[40rem] justify-self-end text-[1.05rem] leading-9 text-black/58">
-            <p>{project.description}</p>
-            <p className="mt-6 inline-flex items-center gap-2 text-black">
-              {project.intro}
-              <span className="text-[var(--burnt-orange)]">↓</span>
+      <section className="mx-auto max-w-[1400px] px-6 pb-16 pt-10 md:px-10 md:pb-20 md:pt-12">
+        <div className="grid gap-12 lg:grid-cols-[minmax(0,0.92fr)_minmax(0,1.08fr)] lg:gap-20">
+          <div>
+            <h1 className="text-[1.55rem] font-medium leading-[1.02] tracking-[-0.04em] md:text-[2.2rem]">
+              {project.title}
+            </h1>
+            <p className="mt-5 max-w-[32rem] text-[0.86rem] leading-7 text-white/72 md:mt-6 md:text-[0.95rem] md:leading-8">
+              {project.overview}
             </p>
           </div>
-        </div>
 
-        <div className="mt-12">
-          <RevealImage
-            src={project.heroImage}
-            alt={project.title}
-            className="aspect-[1.92] bg-neutral-100"
-            imgClassName="select-none"
-          />
-        </div>
-
-        <div className="mt-12 grid gap-8 border-b border-black/10 pb-16 md:grid-cols-2 xl:grid-cols-5">
-          {metaItems.map((item) => {
-            const Icon = item.icon;
-            return (
-              <div key={item.key} className="flex items-start gap-4">
-                <Icon className="mt-1 h-5 w-5 text-black/42" />
-                <div>
-                  <p className="text-[0.82rem] uppercase tracking-[0.05em] text-black/42">
-                    {item.label}
-                  </p>
-                  <p className="mt-1 text-[1rem] font-medium text-black">
-                    {project[item.key]}
-                  </p>
-                </div>
-              </div>
-            );
-          })}
-        </div>
-
-        <div className="mx-auto max-w-[72rem] py-24">
-          <div className="space-y-14">
-            <div>
-              <h2 className="text-[3.5rem] font-medium tracking-[-0.05em]">
-                Project Overview
-              </h2>
-              <p className="mt-5 max-w-[64rem] text-[1.08rem] leading-10 text-black/62">
-                {project.overview}
-              </p>
-            </div>
-
-            <div>
-              <h2 className="text-[3.2rem] font-medium tracking-[-0.05em]">
-                Archademy Vision
-              </h2>
-              <p className="mt-5 max-w-[64rem] text-[1.08rem] leading-10 text-black/62">
-                {project.vision}
-              </p>
-              <blockquote className="mt-8 border-l border-black pl-6 text-[1.9rem] leading-[1.7] tracking-[-0.03em]">
-                “{project.quote}”
-              </blockquote>
-            </div>
-
-            <div>
-              <RevealImage
-                src={project.detailImage}
-                alt={`${project.title} detail`}
-                className="aspect-[1.52] bg-neutral-100"
-                imgClassName="select-none"
-                direction="right"
+          <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-4 lg:gap-12">
+            {detailMetaItems(project).map((item) => (
+              <DetailMetaItem
+                key={item.label}
+                label={item.label}
+                value={item.value}
               />
-              <p className="mt-2 text-center text-[0.82rem] uppercase tracking-[0.06em] text-black/56">
-                A softer side of sophistication.
-              </p>
-            </div>
-
-            <div>
-              <h2 className="text-[3.2rem] font-medium tracking-[-0.05em]">
-                Key Features
-              </h2>
-              <p className="mt-5 max-w-[64rem] text-[1.08rem] leading-10 text-black/62">
-                {project.title} exemplifies modern design innovation with
-                tailored structures, strategic layouts, and attention-grabbing
-                visuals that create a seamless brand-to-customer connection.
-              </p>
-              <ul className="mt-8 space-y-3 text-[1.02rem] leading-9 text-black/62">
-                {project.features.map((feature) => (
-                  <li key={feature}>• {feature}</li>
-                ))}
-              </ul>
-            </div>
-          </div>
-        </div>
-
-        <SectionMarker letter="B" label="Gallery" />
-        <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-4">
-          {project.gallery.map((image, index) => (
-            <RevealImage
-              key={image}
-              src={image}
-              alt={`${project.title} gallery ${index + 1}`}
-              className="aspect-[0.95] bg-neutral-100"
-              imgClassName="select-none"
-              direction={
-                index % 3 === 0 ? "up" : index % 3 === 1 ? "left" : "right"
-              }
-            />
-          ))}
-        </div>
-
-        <div className="mt-24">
-          <SectionMarker letter="C" label="Explore" />
-          <h2 className="mb-10 text-[3.5rem] font-medium tracking-[-0.05em]">
-            Explore More Projects
-          </h2>
-
-          <div className="border-t border-black/10">
-            {relatedProjects.map((item, index) => (
-              <article
-                key={item.slug}
-                className="grid gap-10 border-b border-black/10 py-16 lg:grid-cols-[0.88fr_1fr_0.74fr]"
-              >
-                <div className="flex flex-col justify-between gap-12">
-                  <div>
-                    <p className="text-[0.92rem] uppercase tracking-[0.04em] text-black/52">
-                      {item.location} - {item.completed}
-                    </p>
-                    <h3 className="mt-4 max-w-[18rem] text-[3rem] font-medium leading-[1.05] tracking-[-0.05em]">
-                      {item.title}
-                    </h3>
-                  </div>
-
-                  <TransitionLink
-                    href={`/work/${item.slug}`}
-                    className="inline-flex items-center gap-3 text-[0.95rem] uppercase tracking-[0.04em] text-black"
-                  >
-                    Read More
-                    <span className="tracking-[0.3em] text-[var(--burnt-orange)]">
-                      ...
-                    </span>
-                  </TransitionLink>
-                </div>
-
-                <RevealImage
-                  src={item.heroImage}
-                  alt={item.title}
-                  className="aspect-[1.5] bg-neutral-100"
-                  direction={index % 2 === 0 ? "left" : "right"}
-                />
-
-                <div className="grid content-start gap-10 text-[1.05rem] leading-9 text-black/58">
-                  <p>{item.description}</p>
-                  <dl className="grid grid-cols-[auto_1fr] gap-x-10 gap-y-6 text-[0.98rem]">
-                    <dt className="uppercase tracking-[0.04em] text-black/42">
-                      Category
-                    </dt>
-                    <dd className="font-medium text-black">{item.category}</dd>
-                    <dt className="uppercase tracking-[0.04em] text-black/42">
-                      Size
-                    </dt>
-                    <dd className="font-medium text-black">{item.size}</dd>
-                    <dt className="uppercase tracking-[0.04em] text-black/42">
-                      Service
-                    </dt>
-                    <dd className="font-medium text-black">{item.service}</dd>
-                  </dl>
-                </div>
-              </article>
             ))}
           </div>
         </div>
       </section>
 
-      <CollaborationCta />
+      <section className="grid md:grid-cols-2">
+        <RevealImage
+          src={project.gallery[0] ?? project.heroImage}
+          alt={`${project.title} exterior view`}
+          className="aspect-[3/3.4] w-full"
+          direction="right"
+        />
+        <RevealImage
+          src={project.gallery[1] ?? project.detailImage}
+          alt={`${project.title} secondary view`}
+          className="aspect-[3/3.4] w-full"
+          direction="left"
+        />
+      </section>
+
+      <section className="mx-auto max-w-[1400px] px-6 py-16 md:px-10 md:py-20">
+        <div className="grid gap-12 lg:grid-cols-[minmax(0,0.85fr)_minmax(0,1.15fr)] lg:gap-20">
+          <div>
+            <p className="text-[0.62rem] uppercase tracking-[0.08em] text-white/45">
+              [Design Vision]
+            </p>
+            <p className="mt-4 max-w-[30rem] text-[0.86rem] leading-7 text-white/72 md:text-[0.95rem] md:leading-8">
+              {project.vision}
+            </p>
+
+            <blockquote className="mt-10 border-l border-white/12 pl-5">
+              <p className="text-[0.92rem] italic leading-7 text-white/78 md:text-[1rem]">
+                &quot;{project.quote}&quot;
+              </p>
+            </blockquote>
+          </div>
+
+          <div className="grid gap-3 sm:grid-cols-2">
+            {scopeItems(project).map((item) => (
+              <div
+                key={item.label}
+                className="border-b border-white/8 pb-3 sm:pb-5"
+              >
+                <p className="text-[0.62rem] uppercase tracking-[0.08em] text-white/45">
+                  [{item.label}]
+                </p>
+                <p className="mt-2 text-[0.8rem] leading-6 text-white/72">
+                  {item.value}
+                </p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="grid md:grid-cols-2">
+        <RevealImage
+          src={project.gallery[2] ?? project.detailImage}
+          alt={`${project.title} interior view`}
+          className="aspect-[3/2.8] w-full"
+          direction="right"
+        />
+        <RevealImage
+          src={project.gallery[3] ?? project.heroImage}
+          alt={`${project.title} landscape view`}
+          className="aspect-[3/2.8] w-full"
+          direction="left"
+        />
+      </section>
+
+      <section className="mx-auto max-w-[1400px] px-6 py-16 md:px-10 md:py-20">
+        <div className="grid gap-12 lg:grid-cols-[minmax(0,0.8fr)_minmax(0,1.2fr)] lg:gap-20">
+          <div>
+            <p className="text-[0.62rem] uppercase tracking-[0.08em] text-white/45">
+              [Project Story]
+            </p>
+            <p className="mt-4 max-w-[30rem] text-[0.86rem] leading-7 text-white/72 md:text-[0.95rem] md:leading-8">
+              {project.intro}
+            </p>
+            <p className="mt-6 max-w-[30rem] text-[0.86rem] leading-7 text-white/72 md:text-[0.95rem] md:leading-8">
+              {project.description}
+            </p>
+            <div className="mt-10">
+              <AnimatedPillButton
+                href="/contact"
+                label="Discuss a Similar Project"
+                light
+                className="max-w-[28rem]"
+              />
+            </div>
+          </div>
+
+          <div>
+            <p className="text-[0.62rem] uppercase tracking-[0.08em] text-white/45">
+              [Key Features]
+            </p>
+            <div className="mt-5 grid gap-4 sm:grid-cols-2">
+              {project.features.map((feature) => (
+                <div key={feature} className="border border-white/8 p-4">
+                  <p className="text-[0.8rem] leading-6 text-white/72">
+                    {feature}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {nextProject ? (
+        <section className="border-t border-white/8">
+          <div className="mx-auto flex max-w-[1400px] items-center justify-between gap-6 px-6 py-12 md:px-10 md:py-14">
+            <div>
+              <p className="text-[0.62rem] uppercase tracking-[0.08em] text-white/45">
+                [Next Project]
+              </p>
+              <TransitionLink
+                href={`/work/${nextProject.slug}`}
+                className="mt-3 inline-block text-[1.45rem] font-medium tracking-[-0.04em] text-white transition-colors hover:text-[var(--burnt-orange)] md:text-[2rem]"
+              >
+                {nextProject.title}
+              </TransitionLink>
+            </div>
+            <span className="hidden text-[0.7rem] uppercase tracking-[0.12em] text-white/42 md:block">
+              {nextProject.category}
+            </span>
+          </div>
+        </section>
+      ) : null}
     </main>
   );
 }

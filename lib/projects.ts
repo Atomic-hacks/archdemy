@@ -25,6 +25,8 @@ export type Project = {
   contractor?: string;
 };
 
+export type ProjectCategory = Project["category"];
+
 export const projects: Project[] = [
   {
     slug: "custom-retail-display-units",
@@ -319,6 +321,21 @@ export const projects: Project[] = [
   },
 ];
 
+export const projectCategories = [
+  "All",
+  ...new Set(projects.map((project) => project.category)),
+] as const;
+
 export function getProjectBySlug(slug: string) {
   return projects.find((project) => project.slug === slug);
+}
+
+export function getNextProject(slug: string) {
+  const currentIndex = projects.findIndex((project) => project.slug === slug);
+
+  if (currentIndex === -1) {
+    return projects[0] ?? null;
+  }
+
+  return projects[(currentIndex + 1) % projects.length] ?? null;
 }

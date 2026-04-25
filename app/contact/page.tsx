@@ -26,7 +26,7 @@ export default function ContactPage() {
                 </p>
                 <a
                   href="mailto:info@archademyltd.com"
-                  className="mt-2 block text-sm font-medium tracking-[-0.03em] text-black md:text-[1.4rem]"
+                  className="mt-2 block text-sm font-medium tracking-[-0.03em] text-black transition-colors hover:text-[var(--burnt-orange)] md:text-[1.4rem]"
                 >
                   info@archademyltd.com
                 </a>
@@ -37,7 +37,7 @@ export default function ContactPage() {
                 </p>
                 <a
                   href="tel:+2340000000000"
-                  className="mt-2 block text-sm font-medium tracking-[-0.03em] text-black md:text-[1.4rem]"
+                  className="mt-2 block text-sm font-medium tracking-[-0.03em] text-black transition-colors hover:text-[var(--burnt-orange)] md:text-[1.4rem]"
                 >
                   +234 000 000 0000
                 </a>
@@ -113,6 +113,7 @@ export default function ContactPage() {
               <AnimatedPillButton
                 href="mailto:info@archademyltd.com"
                 label="Send Inquiry"
+                className="max-w-[28rem]"
               />
             </form>
           </div>

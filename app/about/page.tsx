@@ -287,7 +287,12 @@ export default function AboutPage() {
               possibilities, we&apos;d love to discuss how we can help bring
               your vision to life.
             </p>
-            <AnimatedPillButton href="/contact" label="Get In Touch" light />
+            <AnimatedPillButton
+              href="/contact"
+              label="Get In Touch"
+              light
+              className="mx-auto max-w-[28rem]"
+            />
           </RevealContent>
         </div>
       </section>

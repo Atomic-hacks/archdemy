@@ -1,169 +1,177 @@
 "use client";
 
-import { useState, useMemo } from "react";
-import CollaborationCta from "@/components/ui/CollaborationCta";
-import RevealContent from "@/components/ui/RevealContent";
+import { useMemo, useState } from "react";
+import AnimatedPillButton from "@/components/ui/AnimatedPillButton";
+import RevealImage from "@/components/ui/RevealImage";
 import SectionMarker from "@/components/ui/SectionMarker";
-import ProjectModal from "@/components/ui/ProjectModal";
-import { projects, Project } from "@/lib/projects";
-import Image from "next/image";
+import TransitionLink from "@/components/ui/TransitionLink";
+import ProjectCard from "@/components/work/ProjectCard";
+import { projectCategories, projects } from "@/lib/projects";
+import { cn } from "@/lib/utils";
 
-const ALL = "All";
+const columnOffsets = ["md:pt-0", "md:pt-16", "md:pt-0", "md:pt-8"] as const;
+
+function buildColumns<T>(items: T[], count: number) {
+  return items.reduce<T[][]>(
+    (columns, item, index) => {
+      columns[index % count].push(item);
+      return columns;
+    },
+    Array.from({ length: count }, () => []),
+  );
+}
 
 export default function WorkPage() {
-  const [selectedProject, setSelectedProject] = useState<Project | null>(null);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [activeCategory, setActiveCategory] = useState(ALL);
+  const [activeCategory, setActiveCategory] =
+    useState<(typeof projectCategories)[number]>("All");
+  const [view, setView] = useState<"grid" | "list">("grid");
 
-  const categories = useMemo(() => {
-    const cats = Array.from(new Set(projects.map((p) => p.category)));
-    return [ALL, ...cats];
-  }, []);
+  const filteredProjects = useMemo(() => {
+    if (activeCategory === "All") {
+      return projects;
+    }
 
-  const countByCategory = useMemo(() => {
-    const map: Record<string, number> = { [ALL]: projects.length };
-    projects.forEach((p) => {
-      map[p.category] = (map[p.category] ?? 0) + 1;
-    });
-    return map;
-  }, []);
+    return projects.filter((project) => project.category === activeCategory);
+  }, [activeCategory]);
 
-  const filtered = useMemo(
-    () =>
-      activeCategory === ALL
-        ? projects
-        : projects.filter((p) => p.category === activeCategory),
-    [activeCategory],
+  const projectColumns = useMemo(
+    () => buildColumns(filteredProjects, 4),
+    [filteredProjects],
   );
 
-  const handleProjectClick = (project: Project) => {
-    setSelectedProject(project);
-    setIsModalOpen(true);
-  };
-
-  const handleCloseModal = () => {
-    setIsModalOpen(false);
-    setTimeout(() => setSelectedProject(null), 300);
-  };
-
-  const heights = ["aspect-square", "aspect-[0.85]", "aspect-[1.15]"];
-
   return (
-    <main className="bg-white text-black">
-      <section className="mx-auto px-6 pb-24 pt-40 md:px-10 md:pt-44">
-        <SectionMarker letter="A" label="Work" />
+    <main className="bg-[#0f0f0f] text-white">
+      <section className="mx-auto max-w-[1400px] px-6 pb-24 pt-40 md:px-10 md:pb-32 md:pt-44">
+        <SectionMarker letter="A" label="Projects" dark />
 
-        <div className="grid gap-12 pb-16 lg:grid-cols-[1fr_0.95fr]">
-          <div>
-            <h1 className="text-2xl font-medium leading-[0.95] tracking-[-0.06em] text-black sm:text-3xl md:text-[4.4rem]">
-              Our Projects
+        <div className="mb-14 flex flex-col gap-10 md:mb-16 md:flex-row md:items-start md:justify-between">
+          <div className="max-w-[30rem]">
+            <h1 className="text-2xl font-medium leading-[0.96] tracking-[-0.06em] sm:text-3xl md:text-[4.4rem]">
+              Featured Works and Ongoing Exploration
             </h1>
-            <p className="mt-6 text-sm leading-6 text-black/58 md:text-[1.05rem] md:leading-9">
-              Discover our portfolio of completed projects, showcasing a variety
-              of styles and functionalities across residential, commercial, and
-              hospitality sectors.
+            <p className="mt-6 max-w-[34rem] text-sm leading-6 text-white/62 md:mt-8 md:text-[1.08rem] md:leading-10">
+              A selection of residential, commercial, and hospitality work
+              shaped by context, material clarity, and careful execution.
             </p>
           </div>
+
+          <div className="grid gap-8 sm:grid-cols-2 md:min-w-[23rem] md:gap-10">
+            <div>
+              <p className="mb-3 text-[0.72rem] uppercase tracking-[0.12em] text-white/42">
+                Categories
+              </p>
+              <div className="flex flex-col items-start gap-1.5">
+                {projectCategories.map((category) => {
+                  const isActive = activeCategory === category;
+
+                  return (
+                    <button
+                      key={category}
+                      type="button"
+                      onClick={() => setActiveCategory(category)}
+                      className={cn(
+                        "text-left text-[0.78rem] leading-7 transition-colors hover:text-[var(--burnt-orange)]",
+                        isActive ? "font-medium text-white" : "text-white/65",
+                      )}
+                    >
+                      {category}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+
+            <div className="sm:text-right">
+              <p className="mb-3 text-[0.72rem] uppercase tracking-[0.12em] text-white/42">
+                View
+              </p>
+              <div className="flex flex-col items-start gap-1.5 sm:items-end">
+                {(["grid", "list"] as const).map((option) => {
+                  const isActive = view === option;
+
+                  return (
+                    <button
+                      key={option}
+                      type="button"
+                      onClick={() => setView(option)}
+                      className={cn(
+                        "text-[0.78rem] uppercase leading-7 tracking-[0.08em] transition-colors hover:text-[var(--burnt-orange)]",
+                        isActive ? "font-medium text-white" : "text-white/65",
+                      )}
+                    >
+                      {option}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          </div>
         </div>
 
-        {/* Filter tabs */}
-        <div id="projects" className="border-t border-black/10 pt-10">
-          <div className="flex gap-0 border-b border-black/10 mb-10 overflow-x-auto">
-            {categories.map((cat) => (
-              <button
-                key={cat}
-                onClick={() => setActiveCategory(cat)}
-                className={`
-                  shrink-0 text-[11px] uppercase tracking-[0.07em] px-5 py-3
-                  border-b-[1.5px] -mb-px transition-colors duration-200
-                  ${
-                    activeCategory === cat
-                      ? "text-black border-black"
-                      : "text-black/40 border-transparent hover:text-black/70"
-                  }
-                `}
+        {view === "grid" ? (
+          <div className="grid gap-[3px] md:grid-cols-4">
+            {projectColumns.map((column, columnIndex) => (
+              <div
+                key={`column-${columnIndex}`}
+                className={cn("grid gap-[3px]", columnOffsets[columnIndex])}
               >
-                {cat}
-                <span
-                  className={`
-                    inline-flex items-center justify-center ml-2 text-[10px]
-                    rounded-full px-1.5 min-w-[18px] h-[18px]
-                    ${activeCategory === cat ? "bg-black/8 text-black/60" : "bg-black/5 text-black/35"}
-                  `}
-                >
-                  {countByCategory[cat] ?? 0}
+                {column.map((project, projectIndex) => (
+                  <ProjectCard
+                    key={project.slug}
+                    project={project}
+                    className={cn(
+                      "h-[68vw] min-h-[220px] max-h-[460px] md:h-[27vw] md:min-h-[320px] md:max-h-[520px]",
+                      projectIndex % 3 === 1 && "md:h-[33vw] md:max-h-[620px]",
+                      projectIndex % 4 === 3 && "md:h-[24vw] md:min-h-[280px]",
+                    )}
+                    direction={columnIndex % 2 === 0 ? "right" : "left"}
+                  />
+                ))}
+              </div>
+            ))}
+          </div>
+        ) : (
+          <div className="border-t border-white/8">
+            {filteredProjects.map((project, index) => (
+              <TransitionLink
+                key={project.slug}
+                href={`/work/${project.slug}`}
+                className="flex items-center justify-between gap-6 border-b border-white/8 py-4 text-white/78 transition-colors hover:text-white"
+              >
+                <span className="text-[0.92rem] tracking-[-0.02em] md:text-[1.02rem]">
+                  {String(index + 1).padStart(2, "0")}. {project.title}
                 </span>
-              </button>
+                <span className="text-[0.72rem] uppercase tracking-[0.1em] text-white/42">
+                  {project.category}
+                </span>
+              </TransitionLink>
             ))}
           </div>
-
-          {/* Results count */}
-          <p className="text-[11px] tracking-wide text-black/35 uppercase mb-8">
-            {activeCategory === ALL
-              ? `All ${filtered.length} projects`
-              : `${filtered.length} ${activeCategory.toLowerCase()} project${filtered.length !== 1 ? "s" : ""}`}
-          </p>
-
-          {/* Grid */}
-          <div className="grid gap-6 md:gap-8 auto-rows-max md:grid-cols-2 lg:grid-cols-3">
-            {filtered.map((project, index) => (
-              <RevealContent key={project.slug} delay={index * 0.06}>
-                <article
-                  onClick={() => handleProjectClick(project)}
-                  className="group cursor-pointer h-full"
-                >
-                  {/* Image */}
-                  <div
-                    className={`relative overflow-hidden bg-neutral-100 mb-4 ${heights[index % heights.length]}`}
-                  >
-                    <Image
-                      src={project.heroImage}
-                      alt={project.title}
-                      fill
-                      className="object-cover transition-transform duration-500 ease-[cubic-bezier(0.25,0.46,0.45,0.94)] group-hover:scale-[1.04]"
-                    />
-                    {/* Index marker */}
-                    <span className="absolute top-3 left-3 text-[10px] tracking-[0.08em] text-white/65">
-                      {String(index + 1).padStart(2, "0")}
-                    </span>
-                  </div>
-
-                  {/* Content */}
-                  <div className="space-y-2">
-                    <p className="text-[11px] uppercase tracking-[0.06em] text-black/40">
-                      {project.location} · {project.completed}
-                    </p>
-                    <h2 className="text-base md:text-lg font-medium leading-snug tracking-[-0.025em] group-hover:text-[var(--burnt-orange)] transition-colors duration-200">
-                      {project.title}
-                    </h2>
-                    <p className="text-sm leading-6 text-black/55 line-clamp-2">
-                      {project.description}
-                    </p>
-
-                    {/* Tags */}
-                    <div className="flex flex-wrap gap-1.5 pt-2">
-                      <span className="text-[11px] bg-black/[0.04] text-black/55 px-2.5 py-1 rounded-full">
-                        {project.category}
-                      </span>
-                      <span className="text-[11px] bg-black/[0.04] text-black/55 px-2.5 py-1 rounded-full">
-                        {project.service}
-                      </span>
-                    </div>
-                  </div>
-                </article>
-              </RevealContent>
-            ))}
-          </div>
-        </div>
+        )}
       </section>
 
-      <CollaborationCta />
-
-      <ProjectModal
-        project={selectedProject}
-        isOpen={isModalOpen}
-        onClose={handleCloseModal}
-      />
+      <section className="relative overflow-hidden">
+        <RevealImage
+          src="/house9.jpg"
+          alt="Archademy project atmosphere"
+          className="relative h-[58vw] min-h-[320px] w-full max-h-[800px]"
+          imgClassName="brightness-[0.5]"
+          direction="up"
+        />
+        <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(0,0,0,0.28),rgba(0,0,0,0.55)_80%,rgba(0,0,0,0.72))]" />
+        <div className="absolute inset-x-0 bottom-0 mx-auto flex max-w-[1296px] flex-col items-start justify-end gap-5 px-6 pb-10 md:px-10 md:pb-14">
+          <p className="max-w-[32rem] text-[1rem] leading-7 text-white/78 md:text-[1.3rem] md:leading-10">
+            Every commission begins with close reading: site, climate,
+            circulation, and the way people actually want to live or work.
+          </p>
+          <AnimatedPillButton
+            href="/contact"
+            label="Start a Project"
+            light
+            className="max-w-[26rem]"
+          />
+        </div>
+      </section>
     </main>
   );
 }

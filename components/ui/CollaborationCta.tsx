@@ -17,7 +17,12 @@ export default function CollaborationCta() {
           projects.
         </h2>
         <div className="mt-8">
-          <AnimatedPillButton href="/contact" label="Contact Us" light />
+          <AnimatedPillButton
+            href="/contact"
+            label="Contact Us"
+            light
+            className="mx-auto max-w-[28rem]"
+          />
         </div>
       </div>
     </section>

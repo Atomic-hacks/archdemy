@@ -4,6 +4,7 @@ import "./globals.css";
 import Footer from "@/components/layout/Footer";
 import Navbar from "@/components/layout/Navbar";
 import AppProviders from "@/components/providers/AppProviders";
+import StackSection from "@/components/ui/StackSection";
 
 export const poppins = Poppins({
   subsets: ["latin"],
@@ -36,7 +37,9 @@ export default function RootLayout({
         <AppProviders>
           <Navbar />
           {children}
-          <Footer />
+          <StackSection>
+            <Footer />
+          </StackSection>
         </AppProviders>
       </body>
     </html>

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useLayoutEffect, useRef } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
@@ -14,13 +14,15 @@ type RevealImageProps = {
   className?: string;
   imgClassName?: string;
   direction?: RevealDirection;
+  style?: React.CSSProperties;
 };
 
-const offsets: Record<RevealDirection, { xPercent: number; yPercent: number }> = {
-  up: { xPercent: 0, yPercent: 100 },
-  left: { xPercent: -100, yPercent: 0 },
-  right: { xPercent: 100, yPercent: 0 },
-};
+const offsets: Record<RevealDirection, { xPercent: number; yPercent: number }> =
+  {
+    up: { xPercent: 0, yPercent: 100 },
+    left: { xPercent: -100, yPercent: 0 },
+    right: { xPercent: 100, yPercent: 0 },
+  };
 
 export default function RevealImage({
   src,
@@ -28,11 +30,12 @@ export default function RevealImage({
   className = "",
   imgClassName = "",
   direction = "up",
+  style,
 }: RevealImageProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const imageRef = useRef<HTMLImageElement>(null);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     const container = containerRef.current;
     const image = imageRef.current;
 
@@ -79,6 +82,7 @@ export default function RevealImage({
         className={`h-full w-full object-cover ${imgClassName}`}
         draggable={false}
         loading="lazy"
+        style={style}
       />
     </div>
   );

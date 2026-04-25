@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useLayoutEffect, useRef } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
@@ -20,16 +20,13 @@ export default function ParallaxHero({
   const containerRef = useRef<HTMLDivElement>(null);
   const mediaRef = useRef<HTMLVideoElement | HTMLDivElement>(null);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     const container = containerRef.current;
     const media = mediaRef.current;
 
-    if (!container || !media) {
-      return;
-    }
+    if (!container || !media) return;
 
     const ctx = gsap.context(() => {
-      // Parallax effect for video/image
       gsap.to(media, {
         scrollTrigger: {
           trigger: container,
@@ -49,34 +46,34 @@ export default function ParallaxHero({
   }, []);
 
   return (
-    <section
-      ref={containerRef}
-      className="relative min-h-screen overflow-hidden bg-black text-white"
-    >
-      {videoSrc ? (
-        <video
-          ref={mediaRef as React.RefObject<HTMLVideoElement>}
-          src={videoSrc}
-          autoPlay
-          muted
-          loop
-          playsInline
-          className="absolute inset-0 h-full w-full object-cover"
-        />
-      ) : (
-        <div
-          ref={mediaRef as React.RefObject<HTMLDivElement>}
-          className="absolute inset-0 h-full w-full bg-cover bg-center"
-          style={{
-            backgroundImage: `url('${imageSrc}')`,
-          }}
-        />
-      )}
-      <div className="absolute inset-0 bg-black/15" />
-      <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(0,0,0,0.45),rgba(0,0,0,0.35)_35%,rgba(0,0,0,0.62))]" />
+    // Section is exactly 100dvh — padding here creates the "inset" gap
+    <section ref={containerRef} className="h-dvh w-full pt-20 pb-6 px-6">
+      
+      <div className="relative h-full w-full overflow-hidden rounded-2xl">
+        {videoSrc ? (
+          <video
+            ref={mediaRef as React.RefObject<HTMLVideoElement>}
+            src={videoSrc}
+            autoPlay
+            muted
+            loop
+            playsInline
+            className="absolute inset-0 h-full w-full object-cover"
+          />
+        ) : (
+          <div
+            ref={mediaRef as React.RefObject<HTMLDivElement>}
+            className="absolute inset-0 h-full w-full bg-cover bg-center"
+            style={{ backgroundImage: `url('${imageSrc}')` }}
+          />
+        )}
 
-      <div className="relative mx-auto flex min-h-screen w-full max-w-[1120px] flex-col justify-end px-6 pb-10 pt-32 md:px-10 lg:px-0">
-        {children}
+        <div className="absolute inset-0 bg-black/15" />
+        <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(0,0,0,0.45),rgba(0,0,0,0.35)_35%,rgba(0,0,0,0.62))]" />
+
+        <div className="relative mx-auto flex h-full w-full max-w-[1120px] flex-col justify-end px-6 pb-10 pt-32 md:px-10 lg:px-0">
+          {children}
+        </div>
       </div>
     </section>
   );
