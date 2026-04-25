@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import AnimatedPillButton from "@/components/ui/AnimatedPillButton";
 import RevealImage from "@/components/ui/RevealImage";
 import SectionMarker from "@/components/ui/SectionMarker";
@@ -8,6 +8,8 @@ import TransitionLink from "@/components/ui/TransitionLink";
 import ProjectCard from "@/components/work/ProjectCard";
 import { projectCategories, projects } from "@/lib/projects";
 import { cn } from "@/lib/utils";
+import Image from "next/image";
+import gsap from "gsap";
 
 const columnOffsets = ["md:pt-0", "md:pt-16", "md:pt-0", "md:pt-8"] as const;
 
@@ -21,16 +23,107 @@ function buildColumns<T>(items: T[], count: number) {
   );
 }
 
+function ProjectListView({
+  projects: filteredProjects,
+}: {
+  projects: typeof projects;
+}) {
+  const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
+  const previewRef = useRef<HTMLDivElement>(null);
+  const posRef = useRef({ x: 0, y: 0 });
+  const rafRef = useRef<number | null>(null);
+
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+
+    posRef.current = { x, y };
+
+    if (rafRef.current) cancelAnimationFrame(rafRef.current);
+    rafRef.current = requestAnimationFrame(() => {
+      if (previewRef.current) {
+        gsap.to(previewRef.current, {
+          x: x + 2,
+          y: y + 8,
+          duration: 0.55,
+          ease: "power3.out",
+        });
+      }
+    });
+  };
+
+  const handleRowEnter = (index: number) => {
+    setHoveredIndex(index);
+    if (previewRef.current) {
+      gsap.fromTo(
+        previewRef.current,
+        { opacity: 0, scale: 0.92 },
+        { opacity: 1, scale: 1, duration: 0.3, ease: "power2.out" },
+      );
+    }
+  };
+
+  const handleRowLeave = () => {
+    setHoveredIndex(null);
+    if (previewRef.current) {
+      gsap.to(previewRef.current, {
+        opacity: 0,
+        scale: 0.94,
+        duration: 0.22,
+        ease: "power2.in",
+      });
+    }
+  };
+
+  return (
+    <div
+      className="relative border-t border-white/8"
+      onMouseMove={handleMouseMove}
+    >
+      {/* Floating image preview */}
+      <div
+        ref={previewRef}
+        className="pointer-events-none fixed left-0 top-0 z-50 h-55 w-75 overflow-hidden"
+        style={{ willChange: "transform", opacity: 0 }}
+      >
+        {hoveredIndex !== null && filteredProjects[hoveredIndex]?.heroImage && (
+          <Image
+            src={filteredProjects[hoveredIndex].heroImage}
+            alt={filteredProjects[hoveredIndex].title}
+            fill
+            className="object-cover"
+          />
+        )}
+      </div>
+
+      {filteredProjects.map((project, index) => (
+        <TransitionLink
+          key={project.slug}
+          href={`/work/${project.slug}`}
+          onMouseEnter={() => handleRowEnter(index)}
+          onMouseLeave={handleRowLeave}
+          className="group flex items-center justify-between gap-6 border-b border-white/8 py-4 text-white/78 transition-colors hover:text-white"
+        >
+          <span className="text-[0.92rem] tracking-[-0.02em] md:text-[1.02rem]">
+            {String(index + 1).padStart(2, "0")}. {project.title}
+          </span>
+          <span className="text-[0.72rem] uppercase tracking-[0.1em] text-white/42">
+            {project.category}
+          </span>
+        </TransitionLink>
+      ))}
+    </div>
+  );
+}
+
 export default function WorkPage() {
   const [activeCategory, setActiveCategory] =
     useState<(typeof projectCategories)[number]>("All");
   const [view, setView] = useState<"grid" | "list">("grid");
 
   const filteredProjects = useMemo(() => {
-    if (activeCategory === "All") {
-      return projects;
-    }
-
+    if (activeCategory === "All") return projects;
     return projects.filter((project) => project.category === activeCategory);
   }, [activeCategory]);
 
@@ -41,7 +134,7 @@ export default function WorkPage() {
 
   return (
     <main className="bg-[#0f0f0f] text-white">
-      <section className="mx-auto max-w-[1400px] px-6 pb-24 pt-40 md:px-10 md:pb-32 md:pt-44">
+      <section className="mx-auto px-6 pb-24 pt-40 md:px-10 md:pb-32 md:pt-44">
         <SectionMarker letter="A" label="Projects" dark />
 
         <div className="mb-14 flex flex-col gap-10 md:mb-16 md:flex-row md:items-start md:justify-between">
@@ -63,7 +156,6 @@ export default function WorkPage() {
               <div className="flex flex-col items-start gap-1.5">
                 {projectCategories.map((category) => {
                   const isActive = activeCategory === category;
-
                   return (
                     <button
                       key={category}
@@ -88,7 +180,6 @@ export default function WorkPage() {
               <div className="flex flex-col items-start gap-1.5 sm:items-end">
                 {(["grid", "list"] as const).map((option) => {
                   const isActive = view === option;
-
                   return (
                     <button
                       key={option}
@@ -131,22 +222,7 @@ export default function WorkPage() {
             ))}
           </div>
         ) : (
-          <div className="border-t border-white/8">
-            {filteredProjects.map((project, index) => (
-              <TransitionLink
-                key={project.slug}
-                href={`/work/${project.slug}`}
-                className="flex items-center justify-between gap-6 border-b border-white/8 py-4 text-white/78 transition-colors hover:text-white"
-              >
-                <span className="text-[0.92rem] tracking-[-0.02em] md:text-[1.02rem]">
-                  {String(index + 1).padStart(2, "0")}. {project.title}
-                </span>
-                <span className="text-[0.72rem] uppercase tracking-[0.1em] text-white/42">
-                  {project.category}
-                </span>
-              </TransitionLink>
-            ))}
-          </div>
+          <ProjectListView projects={filteredProjects} />
         )}
       </section>
 

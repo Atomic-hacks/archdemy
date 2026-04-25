@@ -2,6 +2,7 @@ import RevealImage from "@/components/ui/RevealImage";
 import TransitionLink from "@/components/ui/TransitionLink";
 import type { Project } from "@/lib/projects";
 import { cn } from "@/lib/utils";
+import { ArrowRight } from "lucide-react";
 
 type ProjectCardProps = {
   project: Project;
@@ -43,8 +44,8 @@ export default function ProjectCard({
         </p>
       </div>
 
-      <div className="absolute top-4 right-4 flex h-8 w-8 translate-y-1 items-center justify-center rounded-full border border-white/20 bg-black/20 opacity-0 backdrop-blur-sm transition-all duration-300 ease-out group-hover:translate-y-0 group-hover:opacity-100">
-        <span className="text-[13px] text-white">↗</span>
+      <div className="absolute top-4 right-4 flex h-8 w-8 translate-y-1 items-center justify-center rounded-full border border-white/20 bg-burnt-orange opacity-0 backdrop-blur-sm transition-all duration-300 ease-out group-hover:translate-y-0 group-hover:opacity-100">
+        <ArrowRight className="h-4 w-4 text-white rotate-315" />
       </div>
     </TransitionLink>
   );

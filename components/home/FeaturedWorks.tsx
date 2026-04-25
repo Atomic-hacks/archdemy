@@ -1,7 +1,8 @@
 import ProjectCard from "@/components/work/ProjectCard";
 import RevealImage from "@/components/ui/RevealImage";
-import TransitionLink from "@/components/ui/TransitionLink";
+
 import { projects } from "@/lib/projects";
+import AnimatedPillButton from "../ui/AnimatedPillButton";
 
 const homepageProjects = projects.slice(0, 7);
 
@@ -37,23 +38,23 @@ export default function FeaturedWorksSection() {
       <div className="grid gap-[3px]">
         {/* Row 1 — 4 cols on md+, 2 on mobile */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-[3px]">
-          <ProjectCard project={p0} className="h-[50vw] md:h-[420px]" />
+          <ProjectCard project={p0} className="h-[50vw] md:h-[500px]" />
           <ProjectCard
             project={p1}
-            className="h-[50vw] md:h-[560px] md:-mb-[140px] md:z-10 md:relative"
+            className="h-[50vw] md:h-[650px] md:-mb-[140px] md:z-10 md:relative"
           />
-          <ProjectCard project={p2} className="h-[50vw] md:h-[420px]" />
-          <ProjectCard project={p3} className="h-[50vw] md:h-[420px]" />
+          <ProjectCard project={p2} className="h-[50vw] md:h-[600px]" />
+          <ProjectCard project={p3} className="h-[50vw] md:h-[500px]" />
         </div>
 
         {/* Row 2 — 3 cols on md+, 2 on mobile */}
         <div className="grid grid-cols-2 md:grid-cols-3 gap-[3px] md:mt-[140px]">
-          <ProjectCard project={p4} className="h-[50vw] md:h-[380px]" />
-          <ProjectCard project={p5} className="h-[50vw] md:h-[380px]" />
+          <ProjectCard project={p4} className="h-[50vw] md:h-[580px]" />
+          <ProjectCard project={p5} className="h-[50vw] md:h-[580px]" />
           {p6 && (
             <ProjectCard
               project={p6}
-              className="col-span-2 md:col-span-1 h-[40vw] md:h-[380px]"
+              className="col-span-2 md:col-span-1 h-[40vw] md:h-[580px]"
             />
           )}
         </div>
@@ -61,19 +62,7 @@ export default function FeaturedWorksSection() {
 
       {/* ── All Projects link ───────────────────────────────────────────────── */}
       <div className="flex justify-center py-20">
-        <TransitionLink
-          href="/work"
-          className="group flex items-center gap-3 text-white/50 hover:text-white
-                     text-[11px] tracking-[0.32em] uppercase transition-colors duration-300"
-        >
-          All Projects
-          <span
-            className="w-7 h-7 rounded-full border border-white/20 group-hover:border-white/55
-                       flex items-center justify-center text-[12px] transition-colors duration-300"
-          >
-            ↗
-          </span>
-        </TransitionLink>
+        <AnimatedPillButton href="/work" label="All Projects" />
       </div>
 
       {/* ── Full-bleed atmospheric image ─────────────────────────────────────── */}

@@ -180,7 +180,7 @@ export const projects: Project[] = [
     ],
     heroImage: "/work4.jpg",
     detailImage: "/house2.jpg",
-    gallery: ["/work1.jpg", "/house3.jpg", "/const1.jpg", "/house4.jpg"],
+    gallery: ["/work1.jpg", "/house9.jpg", "/const1.jpg", "/house4.jpg"],
     duration: "30 months",
     timeline: [
       { label: "Master plan", date: "Feb 2021" },
