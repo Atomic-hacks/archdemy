@@ -116,6 +116,69 @@ export default function Hero() {
           );
       },
     );
+    media.add(
+      "(max-width: 899px) and (prefers-reduced-motion: no-preference)",
+      () => {
+        const cleanups: (() => void)[] = [];
+        track.current
+          ?.querySelectorAll<HTMLAnchorElement>(".focus-panel")
+          .forEach((panel) => {
+            const reveal = gsap.timeline({
+              scrollTrigger: {
+                trigger: panel,
+                start: "top 92%",
+                once: true,
+              },
+            });
+            reveal.fromTo(
+              panel.querySelector(".focus-photo"),
+              { clipPath: "inset(0% 0% 100% 0%)" },
+              {
+                clipPath: "inset(0% 0% 0% 0%)",
+                clearProps: "clipPath",
+                duration: 1.1,
+                ease: "power3.inOut",
+              },
+              0,
+            );
+            reveal.fromTo(
+              panel.querySelector("img"),
+              { scale: 1.22 },
+              { scale: 1, duration: 1.3, ease: "power3.out" },
+              0,
+            );
+            reveal.fromTo(
+              panel.querySelector("h2"),
+              { y: 18, opacity: 0, filter: "blur(10px)" },
+              {
+                y: 0,
+                opacity: 1,
+                filter: "blur(0px)",
+                duration: 0.8,
+                ease: "power3.out",
+              },
+              0.12,
+            );
+            reveal.fromTo(
+              panel.querySelectorAll(".focus-index, .focus-info p, .focus-open"),
+              { y: 12, opacity: 0 },
+              {
+                y: 0,
+                opacity: 1,
+                duration: 0.65,
+                stagger: 0.06,
+                ease: "power3.out",
+              },
+              0.25,
+            );
+            // Keyboard users should never land on an unrevealed card.
+            const revealFocused = () => reveal.progress(1);
+            panel.addEventListener("focus", revealFocused);
+            cleanups.push(() => panel.removeEventListener("focus", revealFocused));
+          });
+        return () => cleanups.forEach((cleanup) => cleanup());
+      },
+    );
     media.add("(prefers-reduced-motion: no-preference)", () => {
       const context = gsap.context(() => {
         gsap.fromTo(
