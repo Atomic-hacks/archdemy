@@ -1,106 +1,93 @@
-import TransitionLink from "@/components/ui/TransitionLink";
-
+"use client";
+import Image from "next/image";
+import { useState } from "react";
+import { Plus, ArrowUp } from "lucide-react";
+import { practiceAreas } from "@/lib/studio";
+import { usePathname } from "next/navigation";
+import PreFooter from "@/components/layout/PreFooter";
+import Link from "@/components/ui/TransitionLink";
 export default function Footer() {
+  const [focusOpen, setFocusOpen] = useState(false);
+  const pathname = usePathname();
+  const contact = pathname === "/contact";
+  const imageNavigation = !contact && !pathname.startsWith("/work/");
   return (
-    <footer className="bg-black text-white">
-      <div className="mx-auto grid max-w-[1296px] gap-14 px-6 py-20 md:px-10 lg:grid-cols-[1.25fr_0.95fr_0.7fr_0.7fr_0.7fr]">
-        <div className="space-y-16">
-          <TransitionLink
-            href="/"
-            className="inline-flex items-center gap-2 md:gap-3"
-          >
-            <img src="/logo.png" alt="logo" className="h-10 w-auto md:h-16" />
-            <div className="flex flex-col leading-tight">
-              <span className="text-[0.85rem] font-semibold tracking-[0.28em] uppercase text-[var(--burnt-orange)] md:text-[1.35rem]">
-                Archademy
-              </span>
-              <span className="text-[0.45rem] tracking-[0.22em] text-white/50 uppercase md:text-[0.6rem]">
-                Design Company Limited
-              </span>
+    <>
+      {imageNavigation && <PreFooter />}
+      <footer
+        className={`site-gutter studio-footer ${contact ? "is-contact-footer" : ""}`}
+      >
+        {!contact && (
+          <>
+            <div className="footer-top">
+              <nav aria-label="Footer">
+                <button
+                  type="button"
+                  className="footer-focus-toggle"
+                  aria-expanded={focusOpen}
+                  aria-controls="footer-focus-links"
+                  onClick={() => setFocusOpen(!focusOpen)}
+                >
+                  Our focus{" "}
+                  <Plus
+                    size={15}
+                    style={{ transform: focusOpen ? "rotate(45deg)" : "none" }}
+                  />
+                </button>
+                <div
+                  id="footer-focus-links"
+                  className={`footer-focus-links ${focusOpen ? "is-open" : ""}`}
+                  inert={!focusOpen}
+                >
+                  {practiceAreas.map((area) => (
+                    <Link key={area.slug} href={`/focus/${area.slug}`}>
+                      {area.title}
+                    </Link>
+                  ))}
+                </div>
+                <Link href="/work">Portfolio</Link>
+                <Link href="/journal">Studio journal</Link>
+                <Link href="/about">About</Link>
+                <Link href="/approach">Our approach</Link>
+                <Link href="/contact">Contact</Link>
+              </nav>
+              <Link href="/" className="footer-wordmark" aria-label="Archademy home">
+                <Image src="/logo.png" alt="Archademy Design Company Limited" width={234} height={149} className="brand-logo" />
+              </Link>
             </div>
-          </TransitionLink>
-          <div className="space-y-2 text-[1rem] leading-8 text-white/68">
-            <p>© 2026 Archademy.</p>
-            <p>Work by Archademy. Crafted with precision.</p>
-          </div>
+            <div className="footer-studio">
+              <p>Port Harcourt</p>
+              <div>
+                <p>
+                  KM15 East-West Road,
+                  <br />
+                  Port Harcourt, Rivers State, Nigeria
+                </p>
+                <a href="mailto:info@archademyltd.com">info@archademyltd.com</a>
+              </div>
+            </div>
+          </>
+        )}
+        <div className="footer-bottom">
+          <p>© {new Date().getFullYear()} Archademy</p>
+          <a
+            href="#top"
+            onClick={(event) => {
+              event.preventDefault();
+              window.scrollTo({
+                top: 0,
+                behavior: window.matchMedia("(prefers-reduced-motion: reduce)")
+                  .matches
+                  ? "instant"
+                  : "smooth",
+              });
+            }}
+          >
+            Back to top <ArrowUp size={13} />
+          </a>
+          <span>Design Company Limited</span>
         </div>
-
-        <div className="space-y-10 text-[1rem]">
-          <div>
-            <p className="mb-3 text-[0.82rem] uppercase tracking-[0.08em] text-white/50">
-              Address
-            </p>
-            <p className="max-w-[240px] leading-8 text-white/82">
-              KM15 East-West Road, Port Harcourt, Rivers State, Nigeria
-            </p>
-          </div>
-          <div>
-            <p className="mb-3 text-[0.82rem] uppercase tracking-[0.08em] text-white/50">
-              Email
-            </p>
-            <a
-              href="mailto:info@archademyltd.com"
-              className="leading-8 text-white/82 transition-colors hover:text-[var(--burnt-orange)]"
-            >
-              info@archademyltd.com
-            </a>
-          </div>
-          <div>
-            <p className="mb-3 text-[0.82rem] uppercase tracking-[0.08em] text-white/50">
-              Contact Us
-            </p>
-            <a
-              href="tel:+2340000000000"
-              className="leading-8 text-white/82 transition-colors hover:text-[var(--burnt-orange)]"
-            >
-              +234 000 000 0000
-            </a>
-          </div>
-        </div>
-
-        <div>
-          <p className="mb-5 text-[0.82rem] uppercase tracking-[0.08em] text-white/50">
-            Menu
-          </p>
-          <div className="space-y-3 text-[1rem]">
-            <TransitionLink
-              href="/work"
-              className="block text-white/82 transition-colors hover:text-[var(--burnt-orange)]"
-            >
-              Works
-            </TransitionLink>
-            <TransitionLink
-              href="/contact"
-              className="block text-white/82 transition-colors hover:text-[var(--burnt-orange)]"
-            >
-              Contact
-            </TransitionLink>
-          </div>
-        </div>
-
-        <div>
-          <p className="mb-5 text-[0.82rem] uppercase tracking-[0.08em] text-white/50">
-            Support
-          </p>
-          <div className="space-y-3 text-[1rem] text-white/82">
-            <p>Terms & Conditions</p>
-            <p>Privacy Policy</p>
-            <p>Studio Notes</p>
-          </div>
-        </div>
-
-        <div>
-          <p className="mb-5 text-[0.82rem] uppercase tracking-[0.08em] text-white/50">
-            Social
-          </p>
-          <div className="space-y-3 text-[1rem] text-white/82">
-            <p>@instagram</p>
-            <p>#facebook</p>
-            <p>#linkedin</p>
-            <p>@x</p>
-          </div>
-        </div>
-      </div>
-    </footer>
+      </footer>
+    </>
   );
 }

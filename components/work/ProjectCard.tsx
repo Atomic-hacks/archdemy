@@ -1,52 +1,51 @@
-import RevealImage from "@/components/ui/RevealImage";
-import TransitionLink from "@/components/ui/TransitionLink";
+import Image from "next/image";
+import Link from "@/components/ui/TransitionLink";
 import type { Project } from "@/lib/projects";
 import { cn } from "@/lib/utils";
-import { ArrowRight } from "lucide-react";
 
-type ProjectCardProps = {
+type Props = {
   project: Project;
   className?: string;
   imageClassName?: string;
   direction?: "up" | "left" | "right";
 };
-
 export default function ProjectCard({
   project,
   className,
   imageClassName,
-  direction = "up",
-}: ProjectCardProps) {
+}: Props) {
   return (
-    <TransitionLink
+    <Link
       href={`/work/${project.slug}`}
-      className={cn(
-        "group relative block overflow-hidden bg-neutral-900",
-        className,
-      )}
+      className={cn("project-card group block", className)}
     >
-      <RevealImage
-        src={project.heroImage}
-        alt={project.title}
-        direction={direction}
-        className={cn("absolute inset-0 h-full w-full", imageClassName)}
-        imgClassName="brightness-[0.82] transition-[transform,filter] duration-700 ease-[cubic-bezier(0.25,0.46,0.45,0.94)] group-hover:scale-[1.05] group-hover:brightness-[0.45]"
-      />
-
-      <div className="pointer-events-none absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-black/75 to-transparent" />
-
-      <div className="absolute bottom-0 left-0 p-4 pb-[18px]">
-        <p className="text-[13px] leading-none font-normal tracking-wide text-white">
-          {project.title}
-          <span className="ml-2 text-[10.5px] font-light uppercase tracking-[0.1em] text-white/40">
-            {project.category}
-          </span>
-        </p>
+      <div
+        data-cursor="View project"
+        data-reveal="image"
+        className={cn(
+          "project-image relative aspect-[4/3] overflow-hidden bg-neutral-100",
+          imageClassName,
+        )}
+      >
+        <Image
+          src={project.heroImage}
+          alt={project.title}
+          fill
+          sizes="(max-width: 767px) 100vw, 50vw"
+          className="object-cover "
+        />
       </div>
-
-      <div className="absolute top-4 right-4 flex h-8 w-8 translate-y-1 items-center justify-center rounded-full border border-white/20 bg-burnt-orange opacity-0 backdrop-blur-sm transition-all duration-300 ease-out group-hover:translate-y-0 group-hover:opacity-100">
-        <ArrowRight className="h-4 w-4 text-white rotate-315" />
+      <div className="flex items-start justify-between gap-4 pt-4">
+        <div>
+          <h3 className="text-base leading-snug tracking-[-0.015em] group-hover:underline md:text-lg">
+            {project.title}
+          </h3>
+          <p className="mt-1 text-sm text-neutral-600">{project.location}</p>
+        </div>
+        <span className="pt-1 text-xs text-neutral-600">
+          {project.category}
+        </span>
       </div>
-    </TransitionLink>
+    </Link>
   );
 }

@@ -5,6 +5,7 @@ import { usePathname, useRouter } from "next/navigation";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import Lenis from "lenis";
+import ImageCursor from "@/components/ui/ImageCursor";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -36,6 +37,7 @@ export default function AppProviders({
   const lenisRef = useRef<Lenis | null>(null);
 
   useEffect(() => {
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     const lenis = new Lenis({
       duration: 1.1,
       smoothWheel: true,
@@ -102,11 +104,18 @@ export default function AppProviders({
 
         const overlay = overlayRef.current;
 
-        if (!overlay) {
+        if (
+          !overlay ||
+          window.matchMedia("(prefers-reduced-motion: reduce)").matches
+        ) {
           router.push(href);
           return;
         }
 
+        if (new URL(href, window.location.origin).pathname === pathname) {
+          router.push(href);
+          return;
+        }
         pendingPathRef.current = href;
 
         gsap.killTweensOf(overlay);
@@ -127,9 +136,10 @@ export default function AppProviders({
   return (
     <TransitionContext.Provider value={value}>
       {children}
+      <ImageCursor />
       <div
         ref={overlayRef}
-        className="pointer-events-none fixed inset-0 z-[100] bg-black"
+        className="pointer-events-none fixed inset-0 z-[100] bg-[#252525]"
         aria-hidden="true"
       />
     </TransitionContext.Provider>

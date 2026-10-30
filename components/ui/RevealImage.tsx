@@ -43,6 +43,7 @@ export default function RevealImage({
       return;
     }
 
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     const offset = offsets[direction];
 
     const ctx = gsap.context(() => {
